@@ -125,13 +125,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AdsWrapper.h" />
+    <ClInclude Include="AdsDeviceWrapper.h" />
+    <ClInclude Include="NativeAdsDevice.h" />
+    <ClInclude Include="NativeLogger.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AdsWrapper.cpp" />
+    <ClCompile Include="AdsDeviceWrapper.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="NativeAdsDevice.cpp" />
+    <ClCompile Include="NativeLogger.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

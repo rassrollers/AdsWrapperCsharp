@@ -8,10 +8,6 @@ var remoteUser = "Administrator";
 var remotePassword = "1";
 ushort remotePort = 851;
 
-var ads = new AdsHandler(localIp);
+var ads = new AdsDeviceWrapper(localIp, remoteIp, remotePort, remoteName, remoteUser, remotePassword);
 
-ads.AddRemoteRoute(remoteIp, remoteName, remoteUser, remotePassword);
-
-ads.SetupRoute(remotePort);
-
-ads.PrintState();
+var state = ads.GetState();
