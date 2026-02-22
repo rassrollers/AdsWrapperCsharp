@@ -1,0 +1,231 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Header Files\ADS">
+      <UniqueIdentifier>{e0e270d7-6fda-405d-a59f-a6cbbd607949}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ADS\TwinCAT">
+      <UniqueIdentifier>{54f51277-3814-40ef-96f6-2fc0cdf2cd84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ADS\standalone">
+      <UniqueIdentifier>{b7196527-fc6c-4670-bf76-dda7bd555893}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\ADS\bhf">
+      <UniqueIdentifier>{14c670e8-301b-4f64-b3af-6e37c586b175}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ADS">
+      <UniqueIdentifier>{70f8144d-3b56-4df9-aa1d-021bc80fdd09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ADS\TwinCAT">
+      <UniqueIdentifier>{d423f36b-d079-4df2-b6f4-79bae855add3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ADS\standalone">
+      <UniqueIdentifier>{43ab34a1-8e1a-4517-9bc6-385184208085}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\ADS\bhf">
+      <UniqueIdentifier>{b3db93cc-dd00-4956-be32-e2c488219ecc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="pch.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\bhf\ParameterList.h">
+      <Filter>Header Files\ADS\bhf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\bhf\StringToInteger.h">
+      <Filter>Header Files\ADS\bhf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\bhf\WindowsQuirks.h">
+      <Filter>Header Files\ADS\bhf</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\standalone\AdsDef.h">
+      <Filter>Header Files\ADS\standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\standalone\AdsLib.h">
+      <Filter>Header Files\ADS\standalone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\TwinCAT\AdsDef.h">
+      <Filter>Header Files\ADS\TwinCAT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\TwinCAT\AdsLib.h">
+      <Filter>Header Files\ADS\TwinCAT</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsDef.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsDevice.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsException.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsFile.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsLib.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsNotification.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsNotificationOOI.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AdsVariable.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AmsConnection.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AmsHeader.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AmsPort.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\AmsRouter.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\ECatAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\Frame.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\LicenseAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\Log.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\MasterDcStatAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\NotificationDispatcher.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\RegistryAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\RingBuffer.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\Router.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\RouterAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\RTimeAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\Semaphore.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\Sockets.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\SymbolAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\wrap_endian.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\wrap_registry.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\wrap_socket.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AdsLib.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="pch.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\bhf\ParameterList.cpp">
+      <Filter>Source Files\ADS\bhf</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\AdsLib.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\AmsConnection.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\AmsNetId.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\AmsPort.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\AmsRouter.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\standalone\NotificationDispatcher.cpp">
+      <Filter>Source Files\ADS\standalone</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\TwinCAT\AdsLib.cpp">
+      <Filter>Source Files\ADS\TwinCAT</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\AdsDef.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\AdsDevice.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\AdsFile.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\AdsLib.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\ECatAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\Frame.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\LicenseAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\Log.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\MasterDcStatAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\RegistryAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\RouterAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\RTimeAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\Sockets.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\SymbolAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
