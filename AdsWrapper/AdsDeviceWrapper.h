@@ -13,21 +13,32 @@ namespace AdsWrapper
         int Device;
     };
 
+    public value struct DeviceInfo
+    {
+        String^ Name;
+        int Version;
+        int Revision;
+        int Build;
+	};
+
     public ref class AdsDeviceWrapper
     {
     public:
 
-        AdsDeviceWrapper(String^ localIp,
-            String^ remoteIp,
-            UInt16 port,
-            String^ routeName,
-            String^ user,
-            String^ password);
+        AdsDeviceWrapper(String^ localIp);
 
         ~AdsDeviceWrapper();
         !AdsDeviceWrapper();
 
+        void AddRemoteRoute(String^ routeName, 
+            String^ remoteIp,
+            UInt16 port,
+            String^ user, 
+            String^ password);
+
         AdsState GetState();
+
+		DeviceInfo GetDeviceInfo();
 
     private:
         NativeAdsDevice* _native;
