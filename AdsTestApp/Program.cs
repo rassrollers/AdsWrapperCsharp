@@ -1,4 +1,11 @@
 ﻿using AdsWrapper;
+using System.Diagnostics;
+
+// Register a log callback before creating the device
+LoggerWrapper.SetCallback((level, message) =>
+{
+    Console.WriteLine($"[{level}] {message}");
+});
 
 var localIp = "192.168.1.43";
 
@@ -8,6 +15,15 @@ var remoteUser = "Administrator";
 var remotePassword = "1";
 ushort remotePort = 851;
 
-var ads = new AdsDeviceWrapper(localIp, remoteIp, remotePort, remoteName, remoteUser, remotePassword);
+var ads = new AdsDeviceWrapper(localIp);
 
-var state = ads.GetState();
+try
+{
+    ads.AddRemoteRoute(remoteName, remoteIp, remotePort, remoteUser, remotePassword);
+    var info = ads.GetDeviceInfo();
+    var state = ads.GetState();
+}
+catch (Exception ex)
+{
+    Debug.WriteLine(ex);
+}

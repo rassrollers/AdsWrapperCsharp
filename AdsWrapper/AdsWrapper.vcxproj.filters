@@ -39,6 +39,12 @@
     <ClInclude Include="AdsDeviceWrapper.h">
       <Filter>Header Files\Managed</Filter>
     </ClInclude>
+    <ClInclude Include="NativeLogger.h">
+      <Filter>Header Files\Native</Filter>
+    </ClInclude>
+    <ClInclude Include="LoggerWrapper.h">
+      <Filter>Header Files\Managed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -52,6 +58,12 @@
     </ClCompile>
     <ClCompile Include="AdsDeviceWrapper.cpp">
       <Filter>Source Files\Managed</Filter>
+    </ClCompile>
+    <ClCompile Include="LoggerWrapper.cpp">
+      <Filter>Source Files\Managed</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeLogger.cpp">
+      <Filter>Source Files\Native</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
