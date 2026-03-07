@@ -1,5 +1,7 @@
 #pragma once
 
+#include "AdsDefines.h"
+
 using namespace System;
 using namespace System::Threading::Tasks;
 
@@ -7,20 +9,6 @@ class NativeAdsDevice;   // Forward declaration
 
 namespace AdsWrapper
 {
-    public value struct AdsState
-    {
-        int Ads;
-        int Device;
-    };
-
-    public value struct DeviceInfo
-    {
-        String^ Name;
-        int Version;
-        int Revision;
-        int Build;
-	};
-
     public ref class AdsDeviceWrapper
     {
     public:
@@ -36,8 +24,8 @@ namespace AdsWrapper
             String^ user, 
             String^ password);
 
-        AdsState GetState();
-
+		void SetTwinCatState(AdsState adsState, AdsState deviceState);
+        StateInfo GetState();
 		DeviceInfo GetDeviceInfo();
 
     private:

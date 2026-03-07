@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AdsDefines.h" />
     <ClInclude Include="AdsDeviceWrapper.h" />
     <ClInclude Include="LoggerWrapper.h" />
     <ClInclude Include="NativeAdsDevice.h" />
