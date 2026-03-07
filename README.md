@@ -4,12 +4,28 @@ This is a wrapper for the ADS library for C# projects on Windows.
 
 ADS library is based on the [Beckhoff ADS repo](https://github.com/Beckhoff/ADS)
 
+## Functionality
+
+The wrapper have the following functionalities:
+
+* Add a route to a remote target.
+* Get the ADS state.
+* Set the ADS state.
+* Get the device info
 
 ## Setup solution
 
+* Clone this repo.
+* Run this command to get the submodule cloned:
+
+```shell
+git submodule init
+git submodule update
+```
+
 ### ADS library
 
-* Make a Static C++ library project.
+* Make a C++ Static Library project.
 * Add the header and source files from the ADS GIT repo.
 * Select all .cpp files and disable Precompiled Header.
     * C/C++ -> Precompiled Headers -> Precompiled Header = `Not Using Precompiled Headers`
@@ -26,6 +42,7 @@ ADS library is based on the [Beckhoff ADS repo](https://github.com/Beckhoff/ADS)
 
 ### ADS wrapper project
 
+* Make a C++ Dynamic-Link Library (DLL) project.
 * Add projet reference to the AdsLib project.
 * Setup the C++/CLI properties
     * Advanced -> Common Language Runtime Support = `.NET Runtime Support (/clr:netcore)`
@@ -33,7 +50,7 @@ ADS library is based on the [Beckhoff ADS repo](https://github.com/Beckhoff/ADS)
 * Add additional include path to the ADS library file in the project properties.
     * C/C++ -> General -> Additional Include Directories = `$(SolutionDir)ADS\AdsLib`
 
-Add the following code to the top of your header to fix the winsock issues:
+Add the following code to the pch.h header to fix the winsock issues:
 ```C++
 #define WIN32_LEAN_AND_MEAN
 #include <winsock2.h>
@@ -43,6 +60,7 @@ Add the following code to the top of your header to fix the winsock issues:
 
 ### C# project
 
+* Make a C# Console App.
 * Add projet reference to the AdsLib project.
 * Setup platform settings to match wrapper project.
     * General -> Target OS = `Windows`
