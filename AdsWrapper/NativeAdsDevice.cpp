@@ -19,31 +19,14 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     const std::string& password)
 {
     _remoteIp = remoteIp;
-
-    // Query the actual AmsNetId from the remote IPC instead of assuming .1.1
-    AmsNetId remoteNetId;
-    long getAddrStatus = bhf::ads::GetRemoteAddress(_remoteIp, remoteNetId);
-    if (getAddrStatus) {
-        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
-            "NativeAdsDevice: GetRemoteAddress failed with error code " + std::to_string(getAddrStatus));
-        throw AdsException(getAddrStatus);
-    }
-    NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-        "Retrieved remote AMS NetId for " + _remoteIp + ": " +
-        std::to_string(remoteNetId.b[0]) + "." +
-        std::to_string(remoteNetId.b[1]) + "." +
-        std::to_string(remoteNetId.b[2]) + "." +
-        std::to_string(remoteNetId.b[3]) + "." +
-        std::to_string(remoteNetId.b[4]) + "." +
-		std::to_string(remoteNetId.b[5]));
-    _remoteAms = std::make_unique<AmsNetId>(remoteNetId);
+    _remoteAms = std::make_unique<AmsNetId>(remoteIp + ".1.1");
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
         "Adding remote route to " + _remoteIp);
 
     long routeStatus = bhf::ads::AddRemoteRoute(_remoteIp,
-        *_remoteAms,
-        _remoteIp,
+        *_localAms,
+        _localIp,
         routeName,
         user,
         password);
@@ -59,6 +42,20 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     _device = std::make_unique<AdsDevice>(_remoteIp,
         *_remoteAms,
         port);
+}
+
+void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
+{
+    if (!_device) {
+        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+    }
+    try {
+        _device->SetState(adsState, deviceState);
+    }
+    catch (const AdsException& ex) {
+        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+            "Failed to set TwinCAT state - " + std::string(ex.what()));
+    }
 }
 
 AdsDeviceState NativeAdsDevice::GetState()

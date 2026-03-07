@@ -63,8 +63,6 @@ namespace AdsWrapper
             std::string u = marshal_as<std::string>(user);
             std::string p = marshal_as<std::string>(password);
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: AddRemoteRoute called");
 
             _native->AddRemoteRoute(rName, rIp, port, u, p);
 
@@ -79,22 +77,38 @@ namespace AdsWrapper
         }
     }
 
-    AdsState AdsDeviceWrapper::GetState()
+    void AdsDeviceWrapper::SetTwinCatState(AdsState adsState, AdsState deviceState)
     {
         try
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: GetState called");
+                "AdsDeviceWrapper: SetTwinCatState called with AdsState=" + std::to_string(static_cast<int>(adsState)) +
+                ", DeviceState=" + std::to_string(static_cast<int>(deviceState)));
+            _native->SetTwinCatState(static_cast<ADSSTATE>(adsState), static_cast<ADSSTATE>(deviceState));
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+                "AdsDeviceWrapper: SetTwinCatState completed successfully");
+        }
+        catch (const std::exception& ex)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+                "AdsDeviceWrapper: SetTwinCatState failed - " + std::string(ex.what()));
+            throw gcnew Exception(gcnew String(ex.what()));
+		}
+    }
 
+    StateInfo AdsDeviceWrapper::GetState()
+    {
+        try
+        {
             auto nativeState = _native->GetState();
 
-            AdsState state;
-            state.Ads = nativeState.ads;
-            state.Device = nativeState.device;
+            StateInfo state;
+            state.Ads = static_cast<AdsState>(nativeState.ads);
+            state.Device = static_cast<AdsState>(nativeState.device);
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-                "AdsDeviceWrapper: GetState returned AdsState=" + std::to_string(state.Ads) +
-                ", DeviceState=" + std::to_string(state.Device));
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+                "AdsDeviceWrapper: GetState returned AdsState=" + std::to_string(static_cast<int>(state.Ads)) +
+                ", DeviceState=" + std::to_string(static_cast<int>(state.Device)));
 
             return state;
         }
@@ -110,9 +124,6 @@ namespace AdsWrapper
     {
         try
         {
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: GetDeviceInfo called");
-
 			auto info = _native->GetDeviceInfo();
 
 			DeviceInfo managedInfo;
@@ -121,7 +132,7 @@ namespace AdsWrapper
 			managedInfo.Revision = info.version.revision;
 			managedInfo.Build = info.version.build;
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: GetDeviceInfo returned Name=" + marshal_as<std::string>(managedInfo.Name) +
                 ", Version=" + std::to_string(managedInfo.Version) +
                 ", Revision=" + std::to_string(managedInfo.Revision) +

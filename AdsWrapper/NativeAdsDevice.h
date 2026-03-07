@@ -18,8 +18,8 @@ public:
         const std::string& user,
         const std::string& password);
 
+	void SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState);
     AdsDeviceState GetState();
-
 	DeviceInfo GetDeviceInfo();
 
 private:

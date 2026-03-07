@@ -45,6 +45,9 @@
     <ClInclude Include="LoggerWrapper.h">
       <Filter>Header Files\Managed</Filter>
     </ClInclude>
+    <ClInclude Include="AdsDefines.h">
+      <Filter>Header Files\Managed</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
