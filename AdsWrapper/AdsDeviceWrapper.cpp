@@ -54,7 +54,7 @@ namespace AdsWrapper
     void AdsDeviceWrapper::AddRemoteRoute(String^ routeName,
         String^ remoteIp,
 		String^ remoteNetId,
-        UInt16 amsPort, 
+        AmsPort amsPort, 
         String^ user, 
         String^ password)
     {
@@ -66,7 +66,7 @@ namespace AdsWrapper
             std::string u = marshal_as<std::string>(user);
             std::string p = marshal_as<std::string>(password);
 
-            _native->AddRemoteRoute(rName, rIp, rNetId, amsPort, u, p);
+            _native->AddRemoteRoute(rName, rIp, rNetId, static_cast<int>(amsPort), u, p);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
                 "AdsDeviceWrapper: AddRemoteRoute completed successfully");

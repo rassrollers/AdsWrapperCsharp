@@ -43,6 +43,8 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     _device = std::make_unique<AdsDevice>(_remoteIp,
         *_remoteAms,
         amsPort);
+
+	_device->SetTimeout(5000); // Set a default timeout of 5 seconds
 }
 
 void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
