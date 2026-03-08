@@ -21,7 +21,7 @@ namespace AdsWrapper
         void AddRemoteRoute(String^ routeName, 
             String^ remoteIp,
 			String^ remoteNetId,
-            UInt16 amsPort,
+            AmsPort amsPort,
             String^ user, 
             String^ password);
 
