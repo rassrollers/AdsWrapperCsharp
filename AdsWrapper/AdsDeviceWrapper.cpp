@@ -37,18 +37,31 @@ namespace AdsWrapper
 
     AdsDeviceWrapper::~AdsDeviceWrapper()
     {
+        if (_disposed)
+            return;
+
         NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
             "AdsDeviceWrapper: Disposing");
         this->!AdsDeviceWrapper();
         GC::SuppressFinalize(this);
+        _disposed = true;
     }
 
     AdsDeviceWrapper::!AdsDeviceWrapper()
     {
-        NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-            "AdsDeviceWrapper: Releasing native resources");
-        delete _native;
-        _native = nullptr;
+        if (_native != nullptr)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+                "AdsDeviceWrapper: Releasing native resources");
+            delete _native;
+            _native = nullptr;
+        }
+    }
+
+    void AdsDeviceWrapper::CheckDisposed()
+    {
+        if (_disposed)
+            throw gcnew ObjectDisposedException("AdsDeviceWrapper");
     }
 
     void AdsDeviceWrapper::AddRemoteRoute(String^ routeName,
@@ -58,6 +71,7 @@ namespace AdsWrapper
         String^ user, 
         String^ password)
     {
+        CheckDisposed(); // Check for disposed object
         try
         {
             std::string rName = marshal_as<std::string>(routeName);
@@ -81,6 +95,7 @@ namespace AdsWrapper
 
     void AdsDeviceWrapper::SetTwinCatState(AdsState adsState, AdsState deviceState)
     {
+        CheckDisposed(); // Check for disposed object
         try
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
@@ -100,6 +115,7 @@ namespace AdsWrapper
 
     StateInfo AdsDeviceWrapper::GetState()
     {
+        CheckDisposed(); // Check for disposed object
         try
         {
             auto nativeState = _native->GetState();
@@ -124,6 +140,7 @@ namespace AdsWrapper
 
     DeviceInfo AdsDeviceWrapper::GetDeviceInfo()
     {
+        CheckDisposed(); // Check for disposed object
         try
         {
 			auto info = _native->GetDeviceInfo();

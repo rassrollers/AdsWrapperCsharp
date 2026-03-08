@@ -9,7 +9,7 @@ class NativeAdsDevice;   // Forward declaration
 
 namespace AdsWrapper
 {
-    public ref class AdsDeviceWrapper
+    public ref class AdsDeviceWrapper : IDisposable
     {
     public:
 
@@ -17,6 +17,7 @@ namespace AdsWrapper
 
         ~AdsDeviceWrapper();
         !AdsDeviceWrapper();
+		void CheckDisposed();
 
         void AddRemoteRoute(String^ routeName, 
             String^ remoteIp,
@@ -28,8 +29,8 @@ namespace AdsWrapper
 		void SetTwinCatState(AdsState adsState, AdsState deviceState);
         StateInfo GetState();
 		DeviceInfo GetDeviceInfo();
-
     private:
         NativeAdsDevice* _native;
+		bool _disposed = false;
     };
 }
