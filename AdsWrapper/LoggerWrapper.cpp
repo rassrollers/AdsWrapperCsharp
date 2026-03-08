@@ -36,7 +36,8 @@ namespace AdsWrapper
     void LoggerWrapper::NativeCallback(NativeLogger::LogLevel level,
         const std::string& message)
     {
-        if (_managedHandler != nullptr)
+        LogMessageHandler^ handler = _managedHandler;  // Thread-safe read
+        if (handler != nullptr)
         {
             // Convert native LogLevel to managed LogLevel
             LogLevel managedLevel;
@@ -62,7 +63,7 @@ namespace AdsWrapper
             // Convert std::string to System::String^
             String^ managedMessage = gcnew String(message.c_str());
 
-            _managedHandler->Invoke(managedLevel, managedMessage);
+            handler->Invoke(managedLevel, managedMessage);
         }
     }
 }

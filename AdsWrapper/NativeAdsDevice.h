@@ -11,7 +11,11 @@ public:
     NativeAdsDevice(const std::string& localIp, const std::string& localNetId);
 
     ~NativeAdsDevice();
-
+    
+    // Prevent copying
+    NativeAdsDevice(const NativeAdsDevice&) = delete;
+    NativeAdsDevice& operator=(const NativeAdsDevice&) = delete;
+    
     void AddRemoteRoute(const std::string& routeName,
         const std::string& remoteIp,
 		const std::string& remoteNetId,
@@ -20,8 +24,8 @@ public:
         const std::string& password);
 
 	void SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState);
-    AdsDeviceState GetState();
-	DeviceInfo GetDeviceInfo();
+    AdsDeviceState GetState() const;
+	DeviceInfo GetDeviceInfo() const;
 
 private:
     std::unique_ptr<AmsNetId> _localAms;

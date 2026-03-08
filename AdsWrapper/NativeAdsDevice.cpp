@@ -52,16 +52,11 @@ void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
     if (!_device) {
         throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
     }
-    try {
-        _device->SetState(adsState, deviceState);
-    }
-    catch (const AdsException& ex) {
-        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
-            "Failed to set TwinCAT state - " + std::string(ex.what()));
-    }
+    
+    _device->SetState(adsState, deviceState);
 }
 
-AdsDeviceState NativeAdsDevice::GetState()
+AdsDeviceState NativeAdsDevice::GetState() const
 {
     if (!_device) {
         throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
@@ -69,7 +64,7 @@ AdsDeviceState NativeAdsDevice::GetState()
     return _device->GetState();
 }
 
-DeviceInfo NativeAdsDevice::GetDeviceInfo()
+DeviceInfo NativeAdsDevice::GetDeviceInfo() const
 {
     if (!_device) {
         throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
