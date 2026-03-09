@@ -13,14 +13,15 @@ namespace AdsWrapper
     {
     public:
 
-        AdsDeviceWrapper(String^ localIp);
+        AdsDeviceWrapper(String^ localIp, String^ localNetId);
 
         ~AdsDeviceWrapper();
         !AdsDeviceWrapper();
 
         void AddRemoteRoute(String^ routeName, 
             String^ remoteIp,
-            UInt16 port,
+			String^ remoteNetId,
+            UInt16 amsPort,
             String^ user, 
             String^ password);
 

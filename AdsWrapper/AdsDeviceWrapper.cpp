@@ -9,7 +9,7 @@ using namespace msclr::interop;
 
 namespace AdsWrapper
 {
-    AdsDeviceWrapper::AdsDeviceWrapper(String^ localIp)
+    AdsDeviceWrapper::AdsDeviceWrapper(String^ localIp, String^ localNetId)
     {
         try
         {
@@ -17,11 +17,12 @@ namespace AdsWrapper
                 "AdsDeviceWrapper: Creating new instance");
 
             std::string lIp = marshal_as<std::string>(localIp);
+            std::string lNetId = marshal_as<std::string>(localNetId);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: LocalIp=" + lIp);
 
-            _native = new NativeAdsDevice(lIp);
+            _native = new NativeAdsDevice(lIp, lNetId);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
                 "AdsDeviceWrapper: Instance created successfully");
@@ -52,7 +53,8 @@ namespace AdsWrapper
 
     void AdsDeviceWrapper::AddRemoteRoute(String^ routeName,
         String^ remoteIp,
-        UInt16 port, 
+		String^ remoteNetId,
+        UInt16 amsPort, 
         String^ user, 
         String^ password)
     {
@@ -60,11 +62,11 @@ namespace AdsWrapper
         {
             std::string rName = marshal_as<std::string>(routeName);
             std::string rIp = marshal_as<std::string>(remoteIp);
+			std::string rNetId = marshal_as<std::string>(remoteNetId);
             std::string u = marshal_as<std::string>(user);
             std::string p = marshal_as<std::string>(password);
 
-
-            _native->AddRemoteRoute(rName, rIp, port, u, p);
+            _native->AddRemoteRoute(rName, rIp, rNetId, amsPort, u, p);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
                 "AdsDeviceWrapper: AddRemoteRoute completed successfully");
