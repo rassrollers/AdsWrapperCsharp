@@ -14,7 +14,7 @@ var remoteNetId = "192.168.17.10.1.1";
 var remoteName = "C6015";
 var remoteUser = "Administrator";
 var remotePassword = "1";
-ushort remotePort = 10000;
+var remotePort = AmsPort.SystemService;
 
 var delay = TimeSpan.FromSeconds(3);
 
