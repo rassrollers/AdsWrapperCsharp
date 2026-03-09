@@ -8,13 +8,14 @@
 class NativeAdsDevice
 {
 public:
-    NativeAdsDevice(const std::string& localIp);
+    NativeAdsDevice(const std::string& localIp, const std::string& localNetId);
 
     ~NativeAdsDevice();
 
     void AddRemoteRoute(const std::string& routeName,
         const std::string& remoteIp,
-        uint16_t port,
+		const std::string& remoteNetId,
+        uint16_t amsPort,
         const std::string& user,
         const std::string& password);
 

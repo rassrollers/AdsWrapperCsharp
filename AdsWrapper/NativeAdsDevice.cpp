@@ -2,11 +2,11 @@
 #include "NativeAdsDevice.h"
 #include "NativeLogger.h"
 
-NativeAdsDevice::NativeAdsDevice(const std::string& localIp)
+NativeAdsDevice::NativeAdsDevice(const std::string& localIp, const std::string& localNetId)
 {
-	NativeLogger::Instance().Log(NativeLogger::LogLevel::Info, "Setting local AMS NetId to " + localIp + ".1.1");
+	NativeLogger::Instance().Log(NativeLogger::LogLevel::Info, "Setting local AMS NetId to " + localNetId);
     _localIp = localIp;
-    _localAms = std::make_unique<AmsNetId>(localIp + ".1.1");
+    _localAms = std::make_unique<AmsNetId>(localNetId);
     bhf::ads::SetLocalAddress(*_localAms);
 }
 
@@ -14,12 +14,13 @@ NativeAdsDevice::~NativeAdsDevice() = default;
 
 void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     const std::string& remoteIp,
-    uint16_t port,
+	const std::string& remoteNetId,
+    uint16_t amsPort,
     const std::string& user,
     const std::string& password)
 {
     _remoteIp = remoteIp;
-    _remoteAms = std::make_unique<AmsNetId>(remoteIp + ".1.1");
+    _remoteAms = std::make_unique<AmsNetId>(remoteNetId);
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
         "Adding remote route to " + _remoteIp);
@@ -38,10 +39,10 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     }
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-        "Creating AdsDevice for remote IP " + remoteIp + " on port " + std::to_string(port));
+        "Creating AdsDevice for remote IP " + remoteIp + " on port " + std::to_string(amsPort));
     _device = std::make_unique<AdsDevice>(_remoteIp,
         *_remoteAms,
-        port);
+        amsPort);
 }
 
 void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
