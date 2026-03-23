@@ -47,6 +47,24 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
 	_device->SetTimeout(5000); // Set a default timeout of 5 seconds
 }
 
+void NativeAdsDevice::GetRemoteNetId(const std::string& remoteIp, std::string& netId)
+{
+    AmsNetId amsNetId;
+    long status = bhf::ads::GetRemoteAddress(remoteIp, amsNetId);
+    if (status) {
+        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+            "NativeAdsDevice: GetRemoteNetId failed with error code " + std::to_string(status));
+        throw AdsException(status);
+    }
+
+    netId = std::to_string(amsNetId.b[0]) + "." +
+            std::to_string(amsNetId.b[1]) + "." +
+            std::to_string(amsNetId.b[2]) + "." +
+            std::to_string(amsNetId.b[3]) + "." +
+            std::to_string(amsNetId.b[4]) + "." +
+            std::to_string(amsNetId.b[5]);
+}
+
 void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
 {
     if (!_device) {

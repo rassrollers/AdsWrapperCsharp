@@ -93,6 +93,26 @@ namespace AdsWrapper
         }
     }
 
+    String^ AdsDeviceWrapper::GetRemoteNetId(String^ remoteIp)
+    {
+        CheckDisposed(); // Check for disposed object
+        try
+        {
+            std::string rIp = marshal_as<std::string>(remoteIp);
+            std::string rNetId;
+            _native->GetRemoteNetId(rIp, rNetId);
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+                "AdsDeviceWrapper: GetRemoteNetId completed successfully, NetId=" + rNetId);
+            return gcnew String(rNetId.c_str());
+        }
+        catch (const std::exception& ex)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+                "AdsDeviceWrapper: GetRemoteNetId failed - " + std::string(ex.what()));
+            throw gcnew Exception(gcnew String(ex.what()));
+        }
+	}
+
     void AdsDeviceWrapper::SetTwinCatState(AdsState adsState, AdsState deviceState)
     {
         CheckDisposed(); // Check for disposed object
