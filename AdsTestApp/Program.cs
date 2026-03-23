@@ -7,10 +7,10 @@ LoggerWrapper.SetCallback((level, message) =>
     Console.WriteLine($"[{level}] {message}");
 });
 
-var localIp = "192.168.17.102";
-var localNetId = "192.168.17.100.1.1";
-var remoteIp = "192.168.17.10";
-var remoteNetId = "192.168.17.10.1.1";
+var localIp = "192.168.1.102";
+var localNetId = "192.168.1.100.1.1";
+var remoteIp = "192.168.1.10";
+var remoteNetId = "192.168.1.10.1.1";
 var remoteName = "C6015";
 var remoteUser = "Administrator";
 var remotePassword = "1";
@@ -22,6 +22,10 @@ using var ads = new AdsDeviceWrapper(localIp, localNetId);
 
 try
 {
+    var rmNetId = ads.GetRemoteNetId(remoteIp);
+    Console.WriteLine($"Remote NetId for {remoteIp}: {rmNetId}");
+    Console.ReadLine();
+
     ads.AddRemoteRoute(remoteName, remoteIp, remoteNetId, remotePort, remoteUser, remotePassword);
     var info = ads.GetDeviceInfo();
     Console.WriteLine($"Device info: {info.Name}, {info.Version}");

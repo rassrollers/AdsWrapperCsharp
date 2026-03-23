@@ -9,6 +9,7 @@ ADS library is based on the [Beckhoff ADS repo](https://github.com/Beckhoff/ADS)
 The wrapper have the following functionalities:
 
 * Add a route to a remote target.
+* Get remote AMS Net ID.
 * Get the ADS state.
 * Set the ADS state.
 * Get the device info
@@ -30,7 +31,7 @@ git submodule update
 * Select all .cpp files and disable Precompiled Header.
     * C/C++ -> Precompiled Headers -> Precompiled Header = `Not Using Precompiled Headers`
 * Add additional include path to the ADS library file in the project properties.
-    * C/C++ -> General -> Additional Include Directories = `$(SolutionDir)ADS\AdsLib`
+    * C/C++ -> General -> Additional Include Directories = `$(ProjectDir)..\ADS\AdsLib`
 * Changes the output files directory to not get error on duplicated files (standalone/TwinCAT directories).
     * C/C++ -> Output Files -> Object File Name = `$(IntDir)%(RelativeDir)`
 * Add the following to the Preprocessor Defines:
@@ -48,7 +49,7 @@ git submodule update
     * Advanced -> Common Language Runtime Support = `.NET Runtime Support (/clr:netcore)`
     * Advanced -> .NET Target Windows Version = `7.0`
 * Add additional include path to the ADS library file in the project properties.
-    * C/C++ -> General -> Additional Include Directories = `$(SolutionDir)ADS\AdsLib`
+    * C/C++ -> General -> Additional Include Directories = `$(ProjectDir)..\ADS\AdsLib`
 
 Add the following code to the pch.h header to fix the winsock issues:
 ```C++
