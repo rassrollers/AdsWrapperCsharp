@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include "AdsLib.h"
 #include "AdsDevice.h"
 
@@ -74,6 +75,28 @@ public:
     /// <returns>DeviceInfo containing device name, version, and other metadata</returns>
     /// <exception cref="std::runtime_error">Thrown if device not initialized</exception>
     DeviceInfo GetDeviceInfo() const;
+
+    /// <summary>
+    /// Reads a PLC symbol by name into a raw byte buffer.
+    /// Uses AdsVariable-style handle-based access (ADSIGRP_SYM_VALBYHND).
+    /// </summary>
+    /// <param name="symbolName">Fully qualified PLC symbol name (e.g., "MAIN.myVar")</param>
+    /// <param name="buffer">Output buffer to receive the symbol data</param>
+    /// <param name="bufferSize">Size in bytes of the expected data</param>
+    /// <exception cref="std::runtime_error">Thrown if device not initialized</exception>
+    /// <exception cref="AdsException">Thrown on ADS communication error or size mismatch</exception>
+    void ReadSymbol(const std::string& symbolName, void* buffer, size_t bufferSize) const;
+
+    /// <summary>
+    /// Writes a raw byte buffer to a PLC symbol by name.
+    /// Uses AdsVariable-style handle-based access (ADSIGRP_SYM_VALBYHND).
+    /// </summary>
+    /// <param name="symbolName">Fully qualified PLC symbol name (e.g., "MAIN.myVar")</param>
+    /// <param name="buffer">Data buffer to write</param>
+    /// <param name="bufferSize">Size in bytes of the data</param>
+    /// <exception cref="std::runtime_error">Thrown if device not initialized</exception>
+    /// <exception cref="AdsException">Thrown on ADS communication error</exception>
+    void WriteSymbol(const std::string& symbolName, const void* buffer, size_t bufferSize) const;
 
 private:
     std::unique_ptr<AmsNetId> _localAms;    ///< Local AMS NetId
