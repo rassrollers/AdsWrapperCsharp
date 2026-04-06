@@ -5,6 +5,12 @@
 
 #include <msclr/marshal_cppstd.h>
 
+// Suppress false IntelliSense errors in C++/CLI generic methods
+#ifdef __INTELLISENSE__
+#define generic
+#define where
+#endif
+
 using namespace msclr::interop;
 
 namespace AdsWrapper
@@ -71,7 +77,7 @@ namespace AdsWrapper
         String^ user, 
         String^ password)
     {
-        CheckDisposed(); // Check for disposed object
+        CheckDisposed();
         try
         {
             std::string rName = marshal_as<std::string>(routeName);
@@ -95,7 +101,7 @@ namespace AdsWrapper
 
     String^ AdsDeviceWrapper::GetRemoteNetId(String^ remoteIp)
     {
-        CheckDisposed(); // Check for disposed object
+        CheckDisposed();
         try
         {
             std::string rIp = marshal_as<std::string>(remoteIp);
@@ -115,7 +121,7 @@ namespace AdsWrapper
 
     void AdsDeviceWrapper::SetTwinCatState(AdsState adsState, AdsState deviceState)
     {
-        CheckDisposed(); // Check for disposed object
+        CheckDisposed();
         try
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
@@ -135,7 +141,7 @@ namespace AdsWrapper
 
     StateInfo AdsDeviceWrapper::GetState()
     {
-        CheckDisposed(); // Check for disposed object
+        CheckDisposed();
         try
         {
             auto nativeState = _native->GetState();
@@ -160,7 +166,7 @@ namespace AdsWrapper
 
     DeviceInfo AdsDeviceWrapper::GetDeviceInfo()
     {
-        CheckDisposed(); // Check for disposed object
+        CheckDisposed();
         try
         {
 			auto info = _native->GetDeviceInfo();
@@ -183,6 +189,109 @@ namespace AdsWrapper
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
                 "AdsDeviceWrapper: GetDeviceInfo failed - " + std::string(ex.what()));
+            throw gcnew Exception(gcnew String(ex.what()));
+        }
+    }
+
+    generic <typename T> where T : value class
+    T AdsDeviceWrapper::ReadSymbol(String^ symbolName)
+    {
+        CheckDisposed();
+        try
+        {
+            std::string name = marshal_as<std::string>(symbolName);
+
+            // Marshal::SizeOf<bool> returns 4 (Win32 BOOL), but PLC BOOL is 1 byte
+            bool isBool = (T::typeid == Boolean::typeid);
+            int size = isBool ? 1 : Marshal::SizeOf(T::typeid);
+
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+                "AdsDeviceWrapper: ReadSymbol<" + marshal_as<std::string>(T::typeid->Name) +
+                "> '" + name + "' size=" + std::to_string(size));
+
+            IntPtr ptr = Marshal::AllocHGlobal(size);
+            T result;
+            try
+            {
+                _native->ReadSymbol(name, ptr.ToPointer(), static_cast<size_t>(size));
+
+                if (isBool)
+                {
+                    // Read single byte and convert to Boolean
+                    unsigned char byteVal = *static_cast<unsigned char*>(ptr.ToPointer());
+                    result = safe_cast<T>(static_cast<Boolean>(byteVal != 0));
+                }
+                else
+                {
+                    result = safe_cast<T>(Marshal::PtrToStructure(ptr, T::typeid));
+                }
+            }
+            catch (...)
+            {
+                Marshal::FreeHGlobal(ptr);
+                throw;
+            }
+            Marshal::FreeHGlobal(ptr);
+
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+                "AdsDeviceWrapper: ReadSymbol '" + name + "' completed successfully");
+
+            return result;
+        }
+        catch (const std::exception& ex)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+                "AdsDeviceWrapper: ReadSymbol failed - " + std::string(ex.what()));
+            throw gcnew Exception(gcnew String(ex.what()));
+        }
+    }
+
+    generic <typename T> where T : value class
+    void AdsDeviceWrapper::WriteSymbol(String^ symbolName, T value)
+    {
+        CheckDisposed();
+        try
+        {
+            std::string name = marshal_as<std::string>(symbolName);
+
+            // Marshal::SizeOf<bool> returns 4 (Win32 BOOL), but PLC BOOL is 1 byte
+            bool isBool = (T::typeid == Boolean::typeid);
+            int size = isBool ? 1 : Marshal::SizeOf(T::typeid);
+
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+                "AdsDeviceWrapper: WriteSymbol<" + marshal_as<std::string>(T::typeid->Name) +
+                "> '" + name + "' size=" + std::to_string(size));
+
+            IntPtr ptr = Marshal::AllocHGlobal(size);
+            try
+            {
+                if (isBool)
+                {
+                    // Write single byte: 1 for true, 0 for false
+                    unsigned char byteVal = safe_cast<Boolean>(value) ? 1 : 0;
+                    *static_cast<unsigned char*>(ptr.ToPointer()) = byteVal;
+                }
+                else
+                {
+                    Marshal::StructureToPtr(value, ptr, false);
+                }
+
+                _native->WriteSymbol(name, ptr.ToPointer(), static_cast<size_t>(size));
+            }
+            catch (...)
+            {
+                Marshal::FreeHGlobal(ptr);
+                throw;
+            }
+            Marshal::FreeHGlobal(ptr);
+
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+                "AdsDeviceWrapper: WriteSymbol '" + name + "' completed successfully");
+        }
+        catch (const std::exception& ex)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+                "AdsDeviceWrapper: WriteSymbol failed - " + std::string(ex.what()));
             throw gcnew Exception(gcnew String(ex.what()));
         }
     }

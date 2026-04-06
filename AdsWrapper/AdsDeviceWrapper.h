@@ -3,6 +3,7 @@
 #include "AdsDefines.h"
 
 using namespace System;
+using namespace System::Runtime::InteropServices;
 using namespace System::Threading::Tasks;
 
 class NativeAdsDevice;   // Forward declaration
@@ -87,6 +88,29 @@ namespace AdsWrapper
         /// <returns>DeviceInfo containing device name, version, and other metadata</returns>
         /// <exception cref="ObjectDisposedException">Thrown if object is disposed</exception>
         DeviceInfo GetDeviceInfo();
+
+        /// <summary>
+        /// Reads a PLC symbol by name and returns its value as the specified unmanaged type.
+        /// Supported types: bool, byte, short, int, long, float, double, etc.
+        /// </summary>
+        /// <typeparam name="T">An unmanaged value type matching the PLC symbol's data type</typeparam>
+        /// <param name="symbolName">Fully qualified PLC symbol name (e.g., "MAIN.myVar")</param>
+        /// <returns>The current value of the PLC symbol</returns>
+        /// <exception cref="ObjectDisposedException">Thrown if object is disposed</exception>
+        generic <typename T> where T : value class
+        T ReadSymbol(String^ symbolName);
+
+        /// <summary>
+        /// Writes a value to a PLC symbol by name.
+        /// Supported types: bool, byte, short, int, long, float, double, etc.
+        /// </summary>
+        /// <typeparam name="T">An unmanaged value type matching the PLC symbol's data type</typeparam>
+        /// <param name="symbolName">Fully qualified PLC symbol name (e.g., "MAIN.myVar")</param>
+        /// <param name="value">The value to write</param>
+        /// <exception cref="ObjectDisposedException">Thrown if object is disposed</exception>
+        /// <exception cref="Exception">Thrown on ADS communication error</exception>
+        generic <typename T> where T : value class
+        void WriteSymbol(String^ symbolName, T value);
 
     private:
         NativeAdsDevice* _native;   ///< Pointer to native C++ ADS device implementation

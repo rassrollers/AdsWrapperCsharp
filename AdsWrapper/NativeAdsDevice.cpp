@@ -89,3 +89,52 @@ DeviceInfo NativeAdsDevice::GetDeviceInfo() const
     }
     return _device->GetDeviceInfo();
 }
+
+void NativeAdsDevice::ReadSymbol(const std::string& symbolName, void* buffer, size_t bufferSize) const
+{
+    if (!_device) {
+        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+    }
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "NativeAdsDevice: ReadSymbol '" + symbolName + "' size=" + std::to_string(bufferSize));
+
+    AdsHandle handle = _device->GetHandle(symbolName);
+
+    uint32_t bytesRead = 0;
+    long error = _device->ReadReqEx2(ADSIGRP_SYM_VALBYHND, *handle, bufferSize, buffer, &bytesRead);
+
+    if (error || bytesRead != bufferSize) {
+        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+            "NativeAdsDevice: ReadSymbol failed for '" + symbolName +
+            "' error=" + std::to_string(error) + " bytesRead=" + std::to_string(bytesRead));
+        throw AdsException(error);
+    }
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "NativeAdsDevice: ReadSymbol '" + symbolName + "' read " + std::to_string(bytesRead) + " bytes");
+}
+
+void NativeAdsDevice::WriteSymbol(const std::string& symbolName, const void* buffer, size_t bufferSize) const
+{
+    if (!_device) {
+        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+    }
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "NativeAdsDevice: WriteSymbol '" + symbolName + "' size=" + std::to_string(bufferSize));
+
+    AdsHandle handle = _device->GetHandle(symbolName);
+
+    long error = _device->WriteReqEx(ADSIGRP_SYM_VALBYHND, *handle, bufferSize, buffer);
+
+    if (error) {
+        NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+            "NativeAdsDevice: WriteSymbol failed for '" + symbolName +
+            "' error=" + std::to_string(error));
+        throw AdsException(error);
+    }
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+        "NativeAdsDevice: WriteSymbol '" + symbolName + "' completed successfully");
+}
