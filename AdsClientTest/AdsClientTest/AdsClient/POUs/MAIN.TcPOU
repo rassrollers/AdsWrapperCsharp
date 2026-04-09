@@ -1,0 +1,48 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="MAIN" Id="{ae95fb82-28f6-49dd-87fd-bcad13c3a32a}" SpecialFunc="None">
+    <Declaration><![CDATA[PROGRAM MAIN
+VAR
+	{attribute 'TcNcAxis' := 'Axis1'}
+	axis1		: AXIS_REF;
+	mcPower		: MC_Power;
+	mcReset		: MC_Reset;
+	mcHalt		: MC_Halt;
+	mcVelocity	: MC_MoveVelocity;
+	
+	powerOnAxis		: BOOL;
+	resetAxis		: BOOL;
+	moveAxis		: BOOL;
+	moveVelocity	: LREAL := 100.0;
+	axisPosition	: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[mcVelocity(
+	Axis:= axis1, 
+	Execute:= moveAxis AND powerOnAxis, 
+	Velocity:= moveVelocity 
+);
+
+mcHalt(
+	Axis:= axis1, 
+	Execute:= NOT moveAxis
+);
+
+mcReset(
+	Axis:= axis1, 
+	Execute:= resetAxis
+);
+
+mcPower(
+	Axis:= axis1, 
+	Enable:= powerOnAxis, 
+	Enable_Positive:= powerOnAxis, 
+	Enable_Negative:= powerOnAxis
+);
+
+axisPosition := axis1.NcToPlc.ActPos;
+]]></ST>
+    </Implementation>
+  </POU>
+</TcPlcObject>
