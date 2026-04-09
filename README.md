@@ -52,26 +52,31 @@ class Program
 {
     static void Main()
     {
-        // Create an ADS device instance
-        AdsDevice device = new AdsDevice();
-        
-        // Add a route to the remote target
-        device.AddRoute("192.168.1.100.1.1", "192.168.1.100");
-        
-        // Connect to the device
-        device.Connect("192.168.1.100.1.1");
-        
-        // Read a symbol by name
-        int value = device.ReadSymbol<int>("MySymbol");
-        
-        // Write a symbol by name
-        device.WriteSymbol("MySymbol", 42);
-        
-        // Get the ADS state
-        AdsState state = device.GetAdsState();
-        
-        // Disconnect
-        device.Disconnect();
+        var localIp = "192.168.1.119";
+        var localNetId = "192.168.1.119.1.1";
+        var remoteIp = "192.168.1.10";
+        var routeName = "C6015";
+        var userName = "Administrator";
+        var password = "1";
+
+        using var ads = new AdsDeviceWrapper(localIp, localNetId);
+        var remoteNetId = ads.GetRemoteNetId(remoteIp);
+        ads.AddRemoteRoute(routeName, remoteIp, remoteNetId, AmsPort.TC3Runtime1, userName, password);
+
+        var info = ads.GetDeviceInfo();
+        Console.WriteLine($"Device info: {info}");
+
+        var state = ads.GetState();
+        Console.WriteLine($"ADS state: {state}");
+
+        Console.WriteLine($"Set PLC in run");
+        ads.SetTwinCatState(AdsState.Run, 0);
+
+        double position = ads.ReadSymbol<double>("MAIN.axisPosition");
+        Console.WriteLine($"Axis position: {position}");
+
+        Console.WriteLine("Axis powered on");
+        ads.WriteSymbol<bool>("MAIN.powerOnAxis", true);
     }
 }
 ```
