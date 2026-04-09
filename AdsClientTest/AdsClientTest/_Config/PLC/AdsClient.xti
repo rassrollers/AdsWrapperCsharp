@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.21" ClassName="CNestedPlcProjDef">
+	<Project GUID="{690665CF-9579-4EE8-AE46-51ED2768A51B}" Name="AdsClient" PrjFilePath="..\..\AdsClient\AdsClient.plcproj" TmcFilePath="..\..\AdsClient\AdsClient.tmc" ReloadTmc="true" AmsPort="851" TargetArchiveSettings="#x0001" FileArchiveSettings="#x0000" CopyTmcToTarget="true" CopyTpyToTarget="false" SymbolicMapping="true">
+		<Instance File="AdsClient Instance.xti"/>
+	</Project>
+</TcSmItem>
