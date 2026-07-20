@@ -1,3 +1,20 @@
 {
-    "cmake.ignoreCMakeListsMissing": true
+    "cmake.ignoreCMakeListsMissing": true,
+    "chat.tools.terminal.autoApprove": {
+        "ForEach-Object": true,
+        "/^powershell -Command \"if \\(Test-Path 'c:\\\\git\\\\AdsWrapperCsharp\\\\x64\\\\Debug\\\\AdsWrapper\\.dll'\\) \\{ Write-Host 'Build succeeded - DLL exists'; exit 0 \\} else \\{ Write-Host 'Build failed - DLL not found'; exit 1 \\}\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "ConvertFrom-Csv": true,
+        "dotnet run": true,
+        "Get-Item": true,
+        "Tee-Object": true,
+        "/^cd c:\\\\git\\\\AdsWrapperCsharp; powershell -NoProfile -ExecutionPolicy Bypass -Command \"& \\{ \\$ErrorActionPreference = 'Stop'; \\$pf86 = \\[Environment\\]::GetFolderPath\\('ProgramFilesX86'\\); \\$vswhere = Join-Path \\$pf86 'Microsoft Visual Studio/Installer/vswhere\\.exe'; if \\(-not \\(Test-Path -LiteralPath \\$vswhere\\)\\) \\{ throw 'vswhere\\.exe not found' \\}; \\$msbuild = & \\$vswhere -latest -products \\* -requires Microsoft\\.Component\\.MSBuild -find 'MSBuild/Current/Bin/MSBuild\\.exe' \\| Select-Object -First 1; & \\$msbuild '\\./AdsWrapperCsharp\\.sln' '/t:Build' '/m' '/p:Configuration=Debug' '/p:Platform=x64' \\}\"$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "&": true,
+        "Set-Content": true
+    }
 }

@@ -153,6 +153,9 @@
     <ClInclude Include="..\ADS\AdsLib\wrap_socket.h">
       <Filter>Header Files\ADS</Filter>
     </ClInclude>
+    <ClInclude Include="..\ADS\AdsLib\EventLoggerAccess.h">
+      <Filter>Header Files\ADS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AdsLib.cpp">
@@ -225,6 +228,9 @@
       <Filter>Source Files\ADS</Filter>
     </ClCompile>
     <ClCompile Include="..\ADS\AdsLib\SymbolAccess.cpp">
+      <Filter>Source Files\ADS</Filter>
+    </ClCompile>
+    <ClCompile Include="..\ADS\AdsLib\EventLoggerAccess.cpp">
       <Filter>Source Files\ADS</Filter>
     </ClCompile>
   </ItemGroup>

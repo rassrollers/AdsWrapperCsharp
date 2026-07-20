@@ -55,7 +55,7 @@ public sealed class ConsoleMenu
         while (!cancellationToken.IsCancellationRequested)
         {
             DrawMenu();
-            var input = Console.ReadLine()?.Trim();
+            var input = await ReadLineAsync(cancellationToken);
 
             if (string.IsNullOrWhiteSpace(input))
             {
@@ -87,6 +87,45 @@ public sealed class ConsoleMenu
             {
                 break;
             }
+        }
+    }
+
+    private static async Task<string?> ReadLineAsync(CancellationToken cancellationToken)
+    {
+        var buffer = new System.Text.StringBuilder();
+
+        while (true)
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+
+            while (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(intercept: true);
+                if (key.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    return buffer.ToString();
+                }
+
+                if (key.Key == ConsoleKey.Backspace)
+                {
+                    if (buffer.Length > 0)
+                    {
+                        buffer.Length--;
+                        Console.Write("\b \b");
+                    }
+
+                    continue;
+                }
+
+                if (!char.IsControl(key.KeyChar))
+                {
+                    buffer.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+            }
+
+            await Task.Delay(50, cancellationToken);
         }
     }
 

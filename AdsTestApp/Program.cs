@@ -1,6 +1,8 @@
 ﻿using AdsWrapper;
 using System.Diagnostics;
 using AdsTestApp;
+using System.Globalization;
+using System.Text;
 
 // Initialize logger with configuration from appsettings.json
 LoggerSetup.Initialize();
@@ -12,6 +14,56 @@ var remoteName = "C6015";
 var remoteUser = "Administrator";
 var remotePassword = "1";
 var stateDelay = TimeSpan.FromSeconds(3);
+using var shutdownCts = new CancellationTokenSource();
+EventLoggerWrapper? logger = null;
+EventHandler<TcEventArgs>? eventLoggerHandler = null;
+bool eventLoggerSubscribed = false;
+var capturedEventRows = new List<string>();
+const string eventCsvHeader =
+    "TimeRaisedUtc,EventClassGuid,EventId,Severity,EventType,UniqueId,TimeClearedUtc,TimeConfirmedUtc,ConfirmationState,SourceId,SourceNameByteLength,DataByteLength,SourceName,Text";
+
+static string EscapeCsv(string? value)
+{
+    if (string.IsNullOrEmpty(value))
+    {
+        return "\"\"";
+    }
+
+    var escaped = value.Replace("\"", "\"\"");
+    return $"\"{escaped}\"";
+}
+
+static string BuildEventCsvRow(TcEventArgs e)
+{
+    var fields = new[]
+    {
+        e.EventClassGuid.ToString(),
+        e.EventId.ToString(CultureInfo.InvariantCulture),
+        e.Severity.ToString(),
+        e.EventType.ToString(),
+        e.UniqueId.ToString(CultureInfo.InvariantCulture),
+        e.TimeRaised.ToUniversalTime().ToString("u", CultureInfo.InvariantCulture),
+        e.TimeCleared.ToUniversalTime().ToString("u", CultureInfo.InvariantCulture),
+        e.TimeConfirmed.ToUniversalTime().ToString("u", CultureInfo.InvariantCulture),
+        e.ConfirmationState.ToString(),
+        e.SourceId.ToString(CultureInfo.InvariantCulture),
+        e.SourceNameByteLength.ToString(CultureInfo.InvariantCulture),
+        e.DataByteLength.ToString(CultureInfo.InvariantCulture),
+        e.SourceName ?? string.Empty,
+        e.Text ?? string.Empty,
+    };
+
+    return string.Join(",", fields.Select(EscapeCsv));
+}
+
+ConsoleCancelEventHandler? cancelHandler = (_, e) =>
+{
+    e.Cancel = true;
+    shutdownCts.Cancel();
+    Console.WriteLine("Cancellation requested. Shutting down...");
+};
+
+Console.CancelKeyPress += cancelHandler;
 
 try
 {
@@ -28,6 +80,31 @@ try
     using var adsPlc = adsFactory.CreateAdsDevice(AmsPort.TC3Runtime1);
     Console.WriteLine("Connection to AMS TC3 PLC1 runtime port created");
     using var licenseAccess = new LicenseAccessWrapper(remoteIp, rmNetId);
+    logger = new EventLoggerWrapper(remoteIp, rmNetId);
+
+    eventLoggerHandler = (_, e) =>
+    {
+        lock (capturedEventRows)
+        {
+            capturedEventRows.Add(BuildEventCsvRow(e));
+        }
+
+        Console.WriteLine(
+            $"EventClassGuid={e.EventClassGuid} " +
+            $"EventId={e.EventId} " +
+            $"Severity={e.Severity} " +
+            $"EventType={e.EventType} " +
+            $"UniqueId={e.UniqueId} " +
+            $"TimeRaised={e.TimeRaised:u} " +
+            $"TimeCleared={e.TimeCleared:u} " +
+            $"TimeConfirmed={e.TimeConfirmed:u} " +
+            $"ConfirmationState={e.ConfirmationState} " +
+            $"SourceId={e.SourceId} " +
+            $"SourceNameByteLength={e.SourceNameByteLength} " +
+            $"DataByteLength={e.DataByteLength} " +
+            $"SourceName={e.SourceName} " +
+            $"Text={e.Text}");
+    };
 
     var systemMenu = new ConsoleMenu("ADS system menu")
         .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
@@ -127,15 +204,119 @@ try
             return Task.CompletedTask;
         });
 
+    var eventloggerMenu = new ConsoleMenu("Event Logger menu")
+        .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "Subscribe to EventLogger", _ =>
+        {
+            if (logger is null || eventLoggerHandler is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            logger.EventReceived += eventLoggerHandler;
+            var err = logger.Subscribe();
+            if (err == 0)
+            {
+                eventLoggerSubscribed = true;
+            }
+            else
+            {
+                logger.EventReceived -= eventLoggerHandler;
+            }
+
+            return Task.CompletedTask;
+        })
+        .AddOption("2", "Read EventLogger backlog", _ =>
+        {
+            try
+            {
+                logger.ReadBacklog();
+                Console.WriteLine("Backlog read completed");
+            }
+            catch (InvalidOperationException ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            return Task.CompletedTask;
+        })
+        .AddOption("3", "Unsubscribe from EventLogger", _ =>
+        {
+            if (logger is null || eventLoggerHandler is null)
+            {
+                return Task.CompletedTask;
+            }
+
+            logger.EventReceived -= eventLoggerHandler;
+            logger.Unsubscribe();
+            eventLoggerSubscribed = false;
+            return Task.CompletedTask;
+        })
+        .AddOption("4", "Dump captured events to CSV", _ =>
+        {
+            List<string> rowsSnapshot;
+            lock (capturedEventRows)
+            {
+                rowsSnapshot = new List<string>(capturedEventRows);
+            }
+
+            if (rowsSnapshot.Count == 0)
+            {
+                Console.WriteLine("No captured events to write.");
+                return Task.CompletedTask;
+            }
+
+            var fileName = $"EventLoggerDump_{DateTime.UtcNow:yyyyMMdd_HHmmss}.csv";
+            var filePath = Path.Combine(AppContext.BaseDirectory, fileName);
+
+            using (var writer = new StreamWriter(filePath, false, new UTF8Encoding(encoderShouldEmitUTF8Identifier: false)))
+            {
+                writer.WriteLine(eventCsvHeader);
+                foreach (var row in rowsSnapshot)
+                {
+                    writer.WriteLine(row);
+                }
+            }
+
+            Console.WriteLine($"Wrote {rowsSnapshot.Count} events to {filePath}");
+            return Task.CompletedTask;
+        })
+        .AddOption("5", "Clear captured events", _ =>
+        {
+            int removedCount;
+            lock (capturedEventRows)
+            {
+                removedCount = capturedEventRows.Count;
+                capturedEventRows.Clear();
+            }
+
+            Console.WriteLine($"Cleared {removedCount} captured event(s).");
+            return Task.CompletedTask;
+        });
+
     var mainMenu = new ConsoleMenu("ADS test menu")
         .AddOption("0", "Exit", _ => Task.CompletedTask, closeMenu: true)
         .AddOption("1", "System Service menu", ct => systemMenu.RunAsync(ct))
         .AddOption("2", "PLC1 menu", ct => plcMenu.RunAsync(ct))
-        .AddOption("3", "License menu", ct => licenseMenu.RunAsync(ct));
+        .AddOption("3", "License menu", ct => licenseMenu.RunAsync(ct))
+        .AddOption("4", "EventLogger menu", ct => eventloggerMenu.RunAsync(ct));
 
-    await mainMenu.RunAsync();
+    await mainMenu.RunAsync(shutdownCts.Token);
 }
 catch (Exception ex)
 {
     Debug.WriteLine(ex);
+}
+finally
+{
+    Console.CancelKeyPress -= cancelHandler;
+    if (logger is not null && eventLoggerHandler is not null)
+    {
+        if (eventLoggerSubscribed)
+        {
+            logger.EventReceived -= eventLoggerHandler;
+            logger.Unsubscribe();
+        }
+
+        logger.Dispose();
+    }
 }
