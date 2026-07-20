@@ -134,4 +134,54 @@ namespace AdsWrapper
         int Revision;
         int Build;
     };
+
+    /// <summary>Severity levels for TwinCAT EventLogger events.</summary>
+    public enum class TcEventSeverity : System::UInt16
+    {
+        Verbose  = 0,
+        Info     = 1,
+        Warning  = 2,
+        Error    = 3,
+        Critical = 4,
+    };
+
+    /// <summary>Discriminates one-shot message events from alarm events.</summary>
+    public enum class TcEventType : System::UInt16
+    {
+        Message = 0,
+        Alarm   = 1,
+    };
+
+    /// <summary>
+    /// Event data delivered by <see cref="EventLoggerWrapper::EventReceived"/>.
+    /// </summary>
+    public ref class TcEventArgs : System::EventArgs
+    {
+    public:
+        /// <summary>Severity level of the event.</summary>
+        property TcEventSeverity Severity;
+
+        /// <summary>Distinguishes message events from alarm events.</summary>
+        property TcEventType EventType;
+
+        /// <summary>Identifies the source device or task that raised the event.</summary>
+        property System::UInt32 SourceId;
+
+        /// <summary>Application-defined event identifier.</summary>
+        property System::UInt32 EventId;
+
+        /// <summary>Event payload UniqueId field.</summary>
+        property System::UInt32 UniqueId;
+
+        /// <summary>Event payload SourceName string.</summary>
+        property System::String^ SourceName;
+
+        /// <summary>UTC timestamp of the event.</summary>
+        property System::DateTime TimeStamp;
+
+        /// <summary>
+        /// Decoded event text.  Empty when the publisher did not attach a text payload.
+        /// </summary>
+        property System::String^ Text;
+    };
 }

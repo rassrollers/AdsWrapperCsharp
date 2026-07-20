@@ -48,6 +48,12 @@
     <ClInclude Include="AdsDefines.h">
       <Filter>Header Files\Managed</Filter>
     </ClInclude>
+    <ClInclude Include="EventLoggerWrapper.h">
+      <Filter>Header Files\Managed</Filter>
+    </ClInclude>
+    <ClInclude Include="NativeEventLogger.h">
+      <Filter>Header Files\Native</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -66,6 +72,12 @@
       <Filter>Source Files\Managed</Filter>
     </ClCompile>
     <ClCompile Include="NativeLogger.cpp">
+      <Filter>Source Files\Native</Filter>
+    </ClCompile>
+    <ClCompile Include="EventLoggerWrapper.cpp">
+      <Filter>Source Files\Managed</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeEventLogger.cpp">
       <Filter>Source Files\Native</Filter>
     </ClCompile>
   </ItemGroup>

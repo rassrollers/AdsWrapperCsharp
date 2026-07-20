@@ -21,79 +21,39 @@ try
     using var ads = new AdsDeviceWrapper(localIp, localNetId);
     var rmNetId = ads.GetRemoteNetId(remoteIp);
     Console.WriteLine($"Remote NetId for {remoteIp}: {rmNetId}");
+    //Console.ReadLine();
+
     ads.AddRemoteRoute(remoteName, remoteIp, rmNetId, remotePort, remoteUser, remotePassword);
-    var state = ads.GetState();
 
-    bool runLoop = true;
-    while (runLoop)
-    {
-        Console.WriteLine("Type in command:\n" +
-            "0: Exit\n" +
-            "1: Reconfig\n" +
-            "2: Reset\n" +
-            "3: Read axis position\n" +
-            "4: Power on axis\n" +
-            "5: Move axis\n" +
-            "6: Stop axis\n" +
-            "7: Reset axis\n" +
-            "8: Power off axis");
+    using var logger = new AdsWrapper.EventLoggerWrapper(remoteIp, rmNetId);
+    logger.EventReceived += (_, e) =>
+        Console.WriteLine($"[{e.TimeStamp:u}] {e.Severity} SourceName={e.SourceName} UniqueId={e.UniqueId} {e.Text}");
+    long err = logger.Start();   // subscribe
+    Console.WriteLine("Press enter to stop");
+    Console.ReadLine();
+    logger.Stop();
 
-        var input = Console.ReadLine();
-        switch (input)
-        {
-            case "0":
-                runLoop = false;
-                break;
 
-            case "1":
-                ads.SetTwinCatState(AdsState.Reconfig, 0);
-                await Task.Delay(stateDelay);
-                state = ads.GetState();
-                break;
+    //var info = ads.GetDeviceInfo();
+    //Console.WriteLine($"Device info: {info.Name}, {info.Version}");
+    //var state = ads.GetState();
+    //Console.WriteLine($"Device state: {state.Ads}, {state.Device}");
 
-            case "2":
-                ads.SetTwinCatState(AdsState.Reset, 0);
-                await Task.Delay(stateDelay);
-                state = ads.GetState();
-                break;
+    //Console.WriteLine("Press Enter to set device to Reconfig state...");
+    //Console.ReadLine();
+    //ads.SetTwinCatState(AdsState.Reconfig, 0);
 
-            case "3":
-                double position = ads.ReadSymbol<double>("MAIN.axisPosition");
-                Console.WriteLine($"Axis position: {position}");
-                break;
+    //await Task.Delay(delay);
+    //state = ads.GetState();
+    //Console.WriteLine($"Device state: {state.Ads}, {state.Device}");
+    
+    //Console.WriteLine("Press Enter to set device to Reset state...");
+    //Console.ReadLine();
+    //ads.SetTwinCatState(AdsState.Reset, 0);
 
-            case "4":
-                ads.WriteSymbol<bool>("MAIN.powerOnAxis", true);
-                Console.WriteLine("Axis powered on");
-                break;
-
-            case "5":
-                ads.WriteSymbol<bool>("MAIN.moveAxis", true);
-                Console.WriteLine("Axis move command sent");
-                break;
-
-            case "6":
-                ads.WriteSymbol<bool>("MAIN.moveAxis", false);
-                Console.WriteLine("Axis stop command sent");
-                break;
-
-            case "7":
-                ads.WriteSymbol<bool>("MAIN.resetAxis", true);
-                Console.WriteLine("Axis reset command sent");
-                await Task.Delay(1000);
-                ads.WriteSymbol<bool>("MAIN.resetAxis", false);
-                break;
-
-            case "8":
-                ads.WriteSymbol<bool>("MAIN.powerOnAxis", false);
-                Console.WriteLine("Axis powered off");
-                break;
-
-            default:
-                Console.WriteLine("Invalid command");
-                continue;
-        }
-    }
+    //await Task.Delay(delay);
+    //state = ads.GetState();
+    //Console.WriteLine($"Device state: {state.Ads}, {state.Device}");
 }
 catch (Exception ex)
 {
