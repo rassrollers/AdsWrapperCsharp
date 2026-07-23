@@ -1,5 +1,8 @@
 #pragma once
 
+#include <string>
+#include "AdsDef.h"
+
 using namespace System;
 
 namespace AdsWrapper
@@ -134,4 +137,25 @@ namespace AdsWrapper
         int Revision;
         int Build;
     };
+
+    /// <summary>
+    /// Contains the AL status of all EtherCAT slaves for a single EtherCAT master.
+    /// </summary>
+    public value struct ECatMasterSlaveStatus
+    {
+        /// <summary>The AMS NetId of the EtherCAT master (format: "x.x.x.x.x.x")</summary>
+        String^ MasterNetId;
+        /// <summary>Array of AL status values, one per slave</summary>
+        array<unsigned short>^ SlaveAlStatuses;
+    };
+
+    inline std::string AmsToString(const AmsNetId& amsNetId)
+    {
+        return std::to_string(amsNetId.b[0]) + "." +
+               std::to_string(amsNetId.b[1]) + "." +
+               std::to_string(amsNetId.b[2]) + "." +
+               std::to_string(amsNetId.b[3]) + "." +
+               std::to_string(amsNetId.b[4]) + "." +
+               std::to_string(amsNetId.b[5]);
+    }
 }

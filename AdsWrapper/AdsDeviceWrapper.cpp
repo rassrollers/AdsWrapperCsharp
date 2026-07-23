@@ -10,6 +10,7 @@
 #define generic
 #define where
 #endif
+#include <sstream>
 
 using namespace msclr::interop;
 

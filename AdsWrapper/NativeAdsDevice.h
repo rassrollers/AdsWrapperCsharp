@@ -5,6 +5,7 @@
 #include <vector>
 #include "AdsLib.h"
 #include "AdsDevice.h"
+#include "AdsDefines.h"
 
 /// <summary>
 /// Native C++ wrapper class for managing ADS (Automation Device Specification) device connections.

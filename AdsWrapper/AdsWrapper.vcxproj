@@ -128,8 +128,10 @@
   <ItemGroup>
     <ClInclude Include="AdsDefines.h" />
     <ClInclude Include="AdsDeviceWrapper.h" />
+    <ClInclude Include="EtcDeviceWrapper.h" />
     <ClInclude Include="LoggerWrapper.h" />
     <ClInclude Include="NativeAdsDevice.h" />
+    <ClInclude Include="NativeEtcDevice.h" />
     <ClInclude Include="NativeLogger.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="Resource.h" />
@@ -137,8 +139,10 @@
   <ItemGroup>
     <ClCompile Include="AdsDeviceWrapper.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="EtcDeviceWrapper.cpp" />
     <ClCompile Include="LoggerWrapper.cpp" />
     <ClCompile Include="NativeAdsDevice.cpp" />
+    <ClCompile Include="NativeEtcDevice.cpp" />
     <ClCompile Include="NativeLogger.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
