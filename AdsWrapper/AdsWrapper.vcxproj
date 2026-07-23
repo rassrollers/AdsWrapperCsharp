@@ -128,9 +128,11 @@
   <ItemGroup>
     <ClInclude Include="AdsDefines.h" />
     <ClInclude Include="AdsDeviceWrapper.h" />
+    <ClInclude Include="EtcDeviceWrapper.h" />
     <ClInclude Include="LicenseAccessWrapper.h" />
     <ClInclude Include="LoggerWrapper.h" />
     <ClInclude Include="NativeAdsDevice.h" />
+    <ClInclude Include="NativeEtcDevice.h" />
     <ClInclude Include="NativeLicenseAccess.h" />
     <ClInclude Include="NativeLogger.h" />
     <ClInclude Include="pch.h" />
@@ -139,9 +141,11 @@
   <ItemGroup>
     <ClCompile Include="AdsDeviceWrapper.cpp" />
     <ClCompile Include="AssemblyInfo.cpp" />
+    <ClCompile Include="EtcDeviceWrapper.cpp" />
     <ClCompile Include="LicenseAccessWrapper.cpp" />
     <ClCompile Include="LoggerWrapper.cpp" />
     <ClCompile Include="NativeAdsDevice.cpp" />
+    <ClCompile Include="NativeEtcDevice.cpp" />
     <ClCompile Include="NativeLicenseAccess.cpp" />
     <ClCompile Include="NativeLogger.cpp" />
     <ClCompile Include="pch.cpp">

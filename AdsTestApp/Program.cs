@@ -5,8 +5,8 @@ using AdsTestApp;
 // Initialize logger with configuration from appsettings.json
 LoggerSetup.Initialize();
 
-var localIp = "192.168.1.119";
-var localNetId = "192.168.1.119.1.1";
+var localIp = "192.168.1.43";
+var localNetId = "192.168.1.43.1.1";
 var remoteIp = "192.168.1.10";
 var remoteName = "C6015";
 var remoteUser = "Administrator";
@@ -28,6 +28,7 @@ try
     using var adsPlc = adsFactory.CreateAdsDevice(AmsPort.TC3Runtime1);
     Console.WriteLine("Connection to AMS TC3 PLC1 runtime port created");
     using var licenseAccess = new LicenseAccessWrapper(remoteIp, rmNetId);
+    using var etc = new EtcDeviceWrapper(remoteIp, rmNetId);
 
     var systemMenu = new ConsoleMenu("ADS system menu")
         .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
@@ -127,11 +128,47 @@ try
             return Task.CompletedTask;
         });
 
+    var etcMenu = new ConsoleMenu("EtherCAT menu")
+        .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "List EtherCAT masters", _ =>
+        {
+            var masters = etc.ListAllEtcMasters();
+            Console.WriteLine("EtherCAT Masters:");
+            Console.WriteLine(masters);
+            return Task.CompletedTask;
+        })
+        .AddOption("2", "Get EtherCAT slaves state", _ =>
+        {
+            var slaveStatus = etc.GetECatSlaveAlStatus();
+            if (slaveStatus == null || slaveStatus.Length == 0)
+            {
+                Console.WriteLine("No EtherCAT slave status was found.");
+            }
+            else
+            {
+                foreach (var master in slaveStatus)
+                {
+                    Console.WriteLine($"Master: {master.MasterNetId}");
+                    if (master.SlaveAlStatuses == null || master.SlaveAlStatuses.Length == 0)
+                    {
+                        Console.WriteLine("  No slave AL status found for this master.");
+                        continue;
+                    }
+                    foreach (var alStatus in master.SlaveAlStatuses)
+                    {
+                        Console.WriteLine($"  Slave AL Status: 0x{alStatus:X4}");
+                    }
+                }
+            }
+            return Task.CompletedTask;
+        });
+
     var mainMenu = new ConsoleMenu("ADS test menu")
         .AddOption("0", "Exit", _ => Task.CompletedTask, closeMenu: true)
         .AddOption("1", "System Service menu", ct => systemMenu.RunAsync(ct))
         .AddOption("2", "PLC1 menu", ct => plcMenu.RunAsync(ct))
-        .AddOption("3", "License menu", ct => licenseMenu.RunAsync(ct));
+        .AddOption("3", "License menu", ct => licenseMenu.RunAsync(ct))
+        .AddOption("4", "EtherCAT menu", ct => etcMenu.RunAsync(ct));
 
     await mainMenu.RunAsync();
 }

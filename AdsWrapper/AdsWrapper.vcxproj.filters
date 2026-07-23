@@ -48,6 +48,18 @@
     <ClInclude Include="AdsDefines.h">
       <Filter>Header Files\Managed</Filter>
     </ClInclude>
+    <ClInclude Include="EtcDeviceWrapper.h">
+      <Filter>Header Files\Managed</Filter>
+    </ClInclude>
+    <ClInclude Include="LicenseAccessWrapper.h">
+      <Filter>Header Files\Managed</Filter>
+    </ClInclude>
+    <ClInclude Include="NativeEtcDevice.h">
+      <Filter>Header Files\Native</Filter>
+    </ClInclude>
+    <ClInclude Include="NativeLicenseAccess.h">
+      <Filter>Header Files\Native</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AssemblyInfo.cpp">
@@ -66,6 +78,18 @@
       <Filter>Source Files\Managed</Filter>
     </ClCompile>
     <ClCompile Include="NativeLogger.cpp">
+      <Filter>Source Files\Native</Filter>
+    </ClCompile>
+    <ClCompile Include="EtcDeviceWrapper.cpp">
+      <Filter>Source Files\Managed</Filter>
+    </ClCompile>
+    <ClCompile Include="LicenseAccessWrapper.cpp">
+      <Filter>Source Files\Managed</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeEtcDevice.cpp">
+      <Filter>Source Files\Native</Filter>
+    </ClCompile>
+    <ClCompile Include="NativeLicenseAccess.cpp">
       <Filter>Source Files\Native</Filter>
     </ClCompile>
   </ItemGroup>
