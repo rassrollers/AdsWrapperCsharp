@@ -1,0 +1,156 @@
+<?xml version="1.0"?>
+<TcSmItem xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.24" ClassName="CFlbTermDef" SubType="9099">
+	<DataTypes>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000008}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..0] OF BYTE</Name>
+			<BitSize>8</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000001}">BYTE</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>1</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000004}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..3] OF BIT</Name>
+			<BitSize>4</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>4</Elements>
+			</ArrayInfo>
+		</DataType>
+		<DataType>
+			<Name GUID="{18071995-0000-0000-0000-002000000002}" IecBaseType="true" AutoDeleteType="true" HideSubItems="true">ARRAY [0..1] OF BIT</Name>
+			<BitSize>2</BitSize>
+			<BaseType GUID="{18071995-0000-0000-0000-000000000010}">BIT</BaseType>
+			<ArrayInfo>
+				<LBound>0</LBound>
+				<Elements>2</Elements>
+			</ArrayInfo>
+		</DataType>
+	</DataTypes>
+	<ImageDatas>
+		<ImageData Id="1000">424dd6020000000000003600000028000000100000000e0000000100180000000000a0020000c40e0000c40e00000000000000000000ff00ff000000000000ff00ffff00ffff00ff808080808080808080808080808080ff00ffff00ffff00ffff00ffff00ff000000ff00ffff00ff000000ff00ffff00ffc0c0c0000000c0c0c0000000808080ff00ffff00ffff00ffff00ffff00ff000000ff00ffff00ffff00ffff00ffff00ffc0c0c000ffffc0c0c000ffff808080ff00ffff00ffff00ffff00ffff00ff000000ff00ffff00ffff00ffff00ffff00ffc0c0c0c0c0c0c0c0c0c0c0c0808080ff00ffff00ffff00ffff00ffff00ff000000ff00ffff00ff000000ff00ffff00ffc0c0c0000000c0c0c0000000808080ff00ffff00ffff00ffff00ffff00ffff00ff000000000000ff00ffff00ffff00ffc0c0c0ff0000c0c0c0ff0000808080ff00ffff00ffff00ffff00ffff00ffff00ffff00ffff00ffff00ffff00ffff00ffc0c0c0c0c0c0c0c0c0c0c0c0808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0000000c0c0c0000000808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c00000ffc0c0c00000ff808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0c0c0c0c0c0c0c0c0c0808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0000000c0c0c0000000808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0c0c0c0c0c0c0c0c0c0808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0008000c0c0c0008000808080ff00ffff00ffff00ffff00ffff00ff007fff007fff007fff007fff007fff007fffc0c0c0c0c0c0c0c0c0c0c0c0808080ff00ffff00ffff00ffff00ffff00ff</ImageData>
+	</ImageDatas>
+	<Box Id="5" BoxType="9099" BoxFlags="#x00000020">
+		<Name>__FILENAME__</Name>
+		<ImageId>1000</ImageId>
+		<EtherCAT SlaveType="3" AdsServerAddress="c0a8010a0206ed03" PdiType="#x0405" MboxDataLinkLayer="true" StateMBoxPolling="true" CycleMBoxPollingTime="0" CoeType="47" FoeType="1" VendorId="#x00000002" ProductCode="#x18503052" RevisionNo="#x00150000" BIC="1P061478SBTN999h4gf31KEL6224                        Q1    2P352417230021" InfoDataAddr="true" InfoDataNetId="true" TimeoutMailbox2="2000" GenerateOwnNetId="true" InitializeOwnNetId="true" CheckRevisionNoType="3" PortPhys="51" MaxSlotCount="256" MaxSlotGroupCount="1" SlotPdoIncrement="1" SlotIndexIncrement="16" Type="EL6224 (IO Link Master)" Desc="EL6224">
+			<SyncMan>001000012600010001000000400000010001001026010000</SyncMan>
+			<SyncMan>001100012200010002000000400000010001001122010000</SyncMan>
+			<SyncMan>001200002400000003000000000000000000001224000000</SyncMan>
+			<SyncMan>001306002000010004000000000000000600001320010000</SyncMan>
+			<Fmmu>0000000000000000000000020000000001000000000000000000000000000000</Fmmu>
+			<Fmmu>0000000000000000001300010100000002000000000000000000000000000000</Fmmu>
+			<Fmmu>00000000000000000d0800010100000003000000000000000000000000000000</Fmmu>
+			<BootStrapData>0010f400f410f400</BootStrapData>
+			<SuName>PLC</SuName>
+			<SuTask>#x02010050</SuTask>
+			<DcMode>4672656552756e0000000000000000004672656552756e00000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000</DcMode>
+			<DcMode>4443000000000000000000000000000044432d53796e6368726f6e000000000000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000</DcMode>
+			<Pdo Name="DeviceState Inputs Device" Index="#x1a05" Flags="#x0010" SyncMan="3">
+				<Entry>
+					<Type GUID="{18071995-0000-0000-0000-002000000008}">ARRAY [0..0] OF BYTE</Type>
+				</Entry>
+				<Entry>
+					<Type GUID="{18071995-0000-0000-0000-002000000004}">ARRAY [0..3] OF BIT</Type>
+				</Entry>
+				<Entry Name="Device Diag" Index="#xf101" Sub="#x0d">
+					<Type>BIT</Type>
+				</Entry>
+				<Entry>
+					<Type GUID="{18071995-0000-0000-0000-002000000002}">ARRAY [0..1] OF BIT</Type>
+				</Entry>
+				<Entry Name="Device State" Index="#xf101" Sub="#x10">
+					<Type>BIT</Type>
+				</Entry>
+			</Pdo>
+			<Pdo Name="DeviceState Inputs" Index="#x1a04" Flags="#x0010" SyncMan="3">
+				<Entry Name="State Ch1" Index="#xf100" Sub="#x01">
+					<Type>USINT</Type>
+					<Comment><![CDATA[0x_0 = Port disabled
+0x_1 = Port in std dig in
+0x_2 = Port in std dig out
+0x_3 = Port in communikation OP
+0x_4 = Port in communikation COMSTOP
+0x1_ = Watchdog detected
+0x2_ = internal Error
+0x3_ = invalid Device ID
+0x4_ = invalid Vendor ID
+0x5_ = invalid IO-Link Version
+0x6_ = invalid Frame Capability
+0x7_ = invalid Cycle Time
+0x8_ = invalid PD in length
+0x9_ = invalid PD out length
+0xA_ = no Device detected]]></Comment>
+				</Entry>
+				<Entry Name="State Ch2" Index="#xf100" Sub="#x02">
+					<Type>USINT</Type>
+					<Comment><![CDATA[0x_0 = Port disabled
+0x_1 = Port in std dig in
+0x_2 = Port in std dig out
+0x_3 = Port in communikation OP
+0x_4 = Port in communikation COMSTOP
+0x1_ = Watchdog detected
+0x2_ = internal Error
+0x3_ = invalid Device ID
+0x4_ = invalid Vendor ID
+0x5_ = invalid IO-Link Version
+0x6_ = invalid Frame Capability
+0x7_ = invalid Cycle Time
+0x8_ = invalid PD in length
+0x9_ = invalid PD out length
+0xA_ = no Device detected]]></Comment>
+				</Entry>
+				<Entry Name="State Ch3" Index="#xf100" Sub="#x03">
+					<Type>USINT</Type>
+					<Comment><![CDATA[0x_0 = Port disabled
+0x_1 = Port in std dig in
+0x_2 = Port in std dig out
+0x_3 = Port in communikation OP
+0x_4 = Port in communikation COMSTOP
+0x1_ = Watchdog detected
+0x2_ = internal Error
+0x3_ = invalid Device ID
+0x4_ = invalid Vendor ID
+0x5_ = invalid IO-Link Version
+0x6_ = invalid Frame Capability
+0x7_ = invalid Cycle Time
+0x8_ = invalid PD in length
+0x9_ = invalid PD out length
+0xA_ = no Device detected]]></Comment>
+				</Entry>
+				<Entry Name="State Ch4" Index="#xf100" Sub="#x04">
+					<Type>USINT</Type>
+					<Comment><![CDATA[0x_0 = Port disabled
+0x_1 = Port in std dig in
+0x_2 = Port in std dig out
+0x_3 = Port in communikation OP
+0x_4 = Port in communikation COMSTOP
+0x1_ = Watchdog detected
+0x2_ = internal Error
+0x3_ = invalid Device ID
+0x4_ = invalid Vendor ID
+0x5_ = invalid IO-Link Version
+0x6_ = invalid Frame Capability
+0x7_ = invalid Cycle Time
+0x8_ = invalid PD in length
+0x9_ = invalid PD out length
+0xA_ = no Device detected]]></Comment>
+				</Entry>
+			</Pdo>
+			<Pdo Name="IO Inputs Channel 1" Index="#x1a00" Flags="#x0001" SyncMan="3"/>
+			<Pdo Name="IO Inputs Channel 2" Index="#x1a01" Flags="#x0001" SyncMan="3"/>
+			<Pdo Name="IO Inputs Channel 3" Index="#x1a02" Flags="#x0001" SyncMan="3"/>
+			<Pdo Name="IO Inputs Channel 4" Index="#x1a03" Flags="#x0001" SyncMan="3"/>
+			<Pdo Name="IO Outputs Channel 1" Index="#x1600" InOut="1" Flags="#x0001" SyncMan="2"/>
+			<Pdo Name="IO Outputs Channel 2" Index="#x1601" InOut="1" Flags="#x0001" SyncMan="2"/>
+			<Pdo Name="IO Outputs Channel 3" Index="#x1602" InOut="1" Flags="#x0001" SyncMan="2"/>
+			<Pdo Name="IO Outputs Channel 4" Index="#x1603" InOut="1" Flags="#x0001" SyncMan="2"/>
+			<CoeProfile ProfileNo="407638921"/>
+			<CoeProfile ProfileNo="407638921"/>
+			<CoeProfile ProfileNo="407638921"/>
+			<CoeProfile ProfileNo="407638921"/>
+		</EtherCAT>
+	</Box>
+</TcSmItem>
