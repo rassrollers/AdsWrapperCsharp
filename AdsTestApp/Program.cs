@@ -27,6 +27,7 @@ try
     Console.WriteLine("Connection to AMS System Service port created");
     using var adsPlc = adsFactory.CreateAdsDevice(AmsPort.TC3Runtime1);
     Console.WriteLine("Connection to AMS TC3 PLC1 runtime port created");
+    using var licenseAccess = new LicenseAccessWrapper(remoteIp, rmNetId);
 
     var systemMenu = new ConsoleMenu("ADS system menu")
         .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
@@ -96,10 +97,41 @@ try
             return Task.CompletedTask;
         });
 
+    var licenseMenu = new ConsoleMenu("License Info menu")
+        .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "Show online licenses", _ =>
+        {
+            var onlineInfo = licenseAccess.GetOnlineInfo();
+            if (string.IsNullOrEmpty(onlineInfo))
+                return Task.CompletedTask;
+            Console.WriteLine("Online license info:");
+            Console.WriteLine(onlineInfo);
+            return Task.CompletedTask;
+        })
+        .AddOption("2", "Show platform ID", _ =>
+        {
+            var platformId = licenseAccess.GetPlatformId();
+            Console.WriteLine($"Platform ID: {platformId}");
+            return Task.CompletedTask;
+        })
+        .AddOption("3", "Show system ID", _ =>
+        {
+            var systemId = licenseAccess.GetSystemId();
+            Console.WriteLine($"System ID: {systemId}");
+            return Task.CompletedTask;
+        })
+        .AddOption("4", "Show volume number", _ =>
+        {
+            var volumeNo = licenseAccess.GetVolumeNo();
+            Console.WriteLine($"Volume number: {volumeNo}");
+            return Task.CompletedTask;
+        });
+
     var mainMenu = new ConsoleMenu("ADS test menu")
         .AddOption("0", "Exit", _ => Task.CompletedTask, closeMenu: true)
-        .AddOption("1", "adsSystem submenu", ct => systemMenu.RunAsync(ct))
-        .AddOption("2", "adsPlc submenu", ct => plcMenu.RunAsync(ct));
+        .AddOption("1", "System Service menu", ct => systemMenu.RunAsync(ct))
+        .AddOption("2", "PLC1 menu", ct => plcMenu.RunAsync(ct))
+        .AddOption("3", "License menu", ct => licenseMenu.RunAsync(ct));
 
     await mainMenu.RunAsync();
 }

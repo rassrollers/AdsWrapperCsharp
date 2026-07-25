@@ -18,6 +18,7 @@ The wrapper have the following functionalities:
 * Set the ADS state.
 * Get the device info.
 * Read/Write symbol by name.
+* Access license information (platform ID, system ID, volume number, online license info).
 
 ## Quick Start
 
@@ -86,6 +87,20 @@ try
 
     Console.WriteLine("Axis powered on");
     adsPlc.WriteSymbol<bool>("MAIN.powerOnAxis", true);
+
+    // Access license information
+    using var licenseAccess = new LicenseAccessWrapper(remoteIp, remoteNetId);
+    var onlineInfo = licenseAccess.GetOnlineInfo();
+    Console.WriteLine($"License info:\n{onlineInfo}");
+    
+    var platformId = licenseAccess.GetPlatformId();
+    Console.WriteLine($"Platform ID: 0x{platformId:X4}");
+    
+    var systemId = licenseAccess.GetSystemId();
+    Console.WriteLine($"System ID: {systemId}");
+    
+    var volumeNo = licenseAccess.GetVolumeNo();
+    Console.WriteLine($"Volume number: {volumeNo}");
 }
 catch (Exception ex)
 {
