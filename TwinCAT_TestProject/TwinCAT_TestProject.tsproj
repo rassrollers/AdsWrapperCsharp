@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<TcSmProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.beckhoff.com/schemas/2012/07/TcSmProject" TcSmVersion="1.0" TcVersion="3.1.4026.24" TcVersionFixed="true">
+	<Project ProjectGUID="{012CD8DD-97BB-469B-9DD6-48750AD1E650}" TargetNetId="192.168.1.10.1.1" Target64Bit="true" ShowHideConfigurations="#x3c6">
+		<System>
+			<Settings MaxCpus="4" NonWinCpus="2" RouterMemory="134217728">
+				<Cpu CpuId="2"/>
+				<Cpu CpuId="3"/>
+			</Settings>
+			<Tasks>
+				<Task Id="5" Priority="20" CycleTime="100000" AmsPort="350" AdtTasks="true">
+					<Name>PlcTask</Name>
+				</Task>
+			</Tasks>
+		</System>
+		<Motion>
+			<NC File="NC.xti"/>
+		</Motion>
+		<Plc>
+			<Project File="TestProject.xti"/>
+		</Plc>
+		<Io>
+			<Device File="EtcMaster (EtherCAT).xti" Id="1"/>
+		</Io>
+	</Project>
+	<Mappings>
+		<MappingInfo Identifier="{05000010-2001-0850-1000-040300205008}" Id="#x02030010" Watchdog="14000000040000000400000004000000"/>
+	</Mappings>
+</TcSmProject>

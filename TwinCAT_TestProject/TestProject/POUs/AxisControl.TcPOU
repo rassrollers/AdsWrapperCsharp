@@ -1,0 +1,113 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TcPlcObject Version="1.1.0.1" ProductVersion="3.1.4026.18">
+  <POU Name="AxisControl" Id="{57c58ad5-0d08-07cf-1746-26196577400b}" SpecialFunc="None">
+    <Declaration><![CDATA[FUNCTION_BLOCK AxisControl
+VAR
+	ax			: AXIS_REF;
+	mcPower		: MC_Power;
+	mcReset		: MC_Reset;
+	mcMoveVel	: MC_MoveVelocity;
+	mcHalt		: MC_Halt;
+	
+	_powerOn	: BOOL;
+	_reset		: BOOL;
+	_moveVel	: BOOL;
+	_stop		: BOOL;
+	_velocity	: LREAL;
+END_VAR
+]]></Declaration>
+    <Implementation>
+      <ST><![CDATA[ax.ReadStatus();
+
+mcPower(Axis:= ax, Enable:= _powerOn, Enable_Positive:= _powerOn,	Enable_Negative:= _powerOn);
+
+mcReset(Axis:= ax, Execute:= _reset);
+IF mcReset.Done THEN
+	mcReset(Axis:= ax, Execute:= FALSE);
+	_reset := FALSE;
+END_IF
+
+mcMoveVel(Axis:= ax, Execute:= _moveVel, Velocity:= _velocity);
+IF mcMoveVel.InVelocity THEN
+	_moveVel := FALSE;
+END_IF
+
+mcHalt(Axis:= ax, Execute:= _stop);	
+IF mcHalt.Done THEN
+	_stop := FALSE;
+END_IF
+]]></ST>
+    </Implementation>
+    <Property Name="AxisError" Id="{e84503b5-93a8-0859-271c-b99c5ca74dd1}">
+      <Declaration><![CDATA[PROPERTY AxisError : DWORD]]></Declaration>
+      <Get Name="Get" Id="{9495b105-4825-055a-0565-394aaa01e9a5}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[AxisError := UDINT_TO_DWORD(ax.Status.ErrorID);
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="MoveAxis" Id="{2ed2d19d-343b-025d-2400-9ce26d08a296}">
+      <Declaration><![CDATA[METHOD MoveAxis : BOOL
+VAR_INPUT
+	Velocity: LREAL := 0.1;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_moveVel := TRUE;
+_stop := FALSE;
+_velocity := Velocity;
+
+MoveAxis := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Property Name="Position" Id="{01aeaff8-1d4a-0112-0c1e-49d99f9bafa7}">
+      <Declaration><![CDATA[PROPERTY Position : LREAL]]></Declaration>
+      <Get Name="Get" Id="{bff4513a-6377-0d14-3a21-e4ad17db4400}">
+        <Declaration><![CDATA[]]></Declaration>
+        <Implementation>
+          <ST><![CDATA[Position := ax.NcToPlc.ActPos;
+]]></ST>
+        </Implementation>
+      </Get>
+    </Property>
+    <Method Name="PowerAxis" Id="{0df46747-2c5a-0e25-1098-6a7255e56a86}">
+      <Declaration><![CDATA[METHOD PowerAxis : BOOL
+VAR_INPUT
+	Enable: BOOL;
+END_VAR
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_powerOn := Enable;
+
+PowerAxis := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="Reset" Id="{979dfdb8-d934-02cf-1fda-32b040f4c3d4}">
+      <Declaration><![CDATA[METHOD Reset : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_reset := TRUE;
+_moveVel := FALSE;
+_stop := FALSE;
+
+Reset := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+    <Method Name="StopAxis" Id="{0bb9adb9-2e2c-03fc-31c7-504b2b35be51}">
+      <Declaration><![CDATA[METHOD StopAxis : BOOL
+]]></Declaration>
+      <Implementation>
+        <ST><![CDATA[_moveVel := FALSE;
+_stop := TRUE;
+
+StopAxis := TRUE;
+]]></ST>
+      </Implementation>
+    </Method>
+  </POU>
+</TcPlcObject>
