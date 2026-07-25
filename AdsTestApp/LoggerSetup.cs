@@ -25,8 +25,13 @@ public static class LoggerSetup
         // Determine default log level based on build configuration
         var defaultLogLevel = GetDefaultLogLevel();
 
-        // Get log level from configuration (default based on build type)
-        var logLevelStr = config["Logging:LogLevel:Default"] ?? defaultLogLevel;
+        // Get log level from configuration, reading from the appropriate section based on build type
+        string logLevelStr;
+#if DEBUG
+        logLevelStr = config["Logging:Debug:LogLevel:Default"] ?? defaultLogLevel;
+#else
+        logLevelStr = config["Logging:LogLevel:Default"] ?? defaultLogLevel;
+#endif
 
         // Normalize standard .NET log level names to our enum names
         logLevelStr = NormalizeLogLevel(logLevelStr);
