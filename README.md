@@ -19,6 +19,7 @@ The wrapper have the following functionalities:
 * Get the device info.
 * Read/Write symbol by name.
 * Access license information (platform ID, system ID, volume number, online license info).
+* Access EtherCAT master and slave information.
 
 ## Quick Start
 
@@ -101,6 +102,27 @@ try
     
     var volumeNo = licenseAccess.GetVolumeNo();
     Console.WriteLine($"Volume number: {volumeNo}");
+
+    // Access EtherCAT information
+    using var etcAccess = new EtcDeviceWrapper(remoteIp, remoteNetId);
+    var masters = etcAccess.ListAllEtcMasters();
+    Console.WriteLine($"EtherCAT masters:\n{masters}");
+    
+    var slaveStatuses = etcAccess.GetECatSlaveAlStatus();
+    if (slaveStatuses != null && slaveStatuses.Length > 0)
+    {
+        foreach (var masterStatus in slaveStatuses)
+        {
+            Console.WriteLine($"Master: {masterStatus.MasterNetId}");
+            if (masterStatus.SlaveAlStatuses != null)
+            {
+                foreach (var slaveStatus in masterStatus.SlaveAlStatuses)
+                {
+                    Console.WriteLine($"  Slave AL Status: 0x{slaveStatus:X4}");
+                }
+            }
+        }
+    }
 }
 catch (Exception ex)
 {
