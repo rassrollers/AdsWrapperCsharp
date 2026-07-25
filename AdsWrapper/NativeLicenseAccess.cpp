@@ -8,7 +8,7 @@ NativeLicenseAccess::NativeLicenseAccess(const std::string& remoteIp, const std:
     try
     {
         NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-            "NativeLicenseAccess: Creating with IP=" + remoteIp + ", NetId=" + remoteNetId + ", Port=" + std::to_string(port));
+            "NativeLicenseAccess: Creating License device for remote NetID " + remoteNetId + " on AMS port " + std::to_string(port));
 
         AmsNetId netId(remoteNetId);
         _license = std::make_unique<bhf::ads::LicenseAccess>(remoteIp, netId, port);
@@ -30,7 +30,7 @@ std::string NativeLicenseAccess::GetOnlineInfo() const
 {
     if (!_license)
     {
-        throw std::runtime_error("License access not initialized");
+        throw std::runtime_error("NativeLicenseAccess: License access not initialized");
     }
 
     try
@@ -56,7 +56,7 @@ uint16_t NativeLicenseAccess::GetPlatformId() const
 {
     if (!_license)
     {
-        throw std::runtime_error("License access not initialized");
+        throw std::runtime_error("NativeLicenseAccess: License access not initialized");
     }
 
     try
@@ -66,7 +66,7 @@ uint16_t NativeLicenseAccess::GetPlatformId() const
         const auto result = std::stoul(oss.str());
 
         NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-            "NativeLicenseAccess: GetPlatformId completed successfully, value=" + std::to_string(result));
+            "NativeLicenseAccess: GetPlatformId completed successfully, value: " + std::to_string(result));
 
         return static_cast<uint16_t>(result);
     }
@@ -82,7 +82,7 @@ std::string NativeLicenseAccess::GetSystemId() const
 {
     if (!_license)
     {
-        throw std::runtime_error("License access not initialized");
+        throw std::runtime_error("NativeLicenseAccess: License access not initialized");
     }
 
     try
@@ -114,7 +114,7 @@ uint32_t NativeLicenseAccess::GetVolumeNo() const
 {
     if (!_license)
     {
-        throw std::runtime_error("License access not initialized");
+        throw std::runtime_error("NativeLicenseAccess: License access not initialized");
     }
 
     try
@@ -124,7 +124,7 @@ uint32_t NativeLicenseAccess::GetVolumeNo() const
         const auto result = std::stoul(oss.str());
 
         NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-            "NativeLicenseAccess: GetVolumeNo completed successfully, value=" + std::to_string(result));
+            "NativeLicenseAccess: GetVolumeNo completed successfully, value: " + std::to_string(result));
 
         return static_cast<uint32_t>(result);
     }

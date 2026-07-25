@@ -100,7 +100,7 @@ namespace AdsWrapper
             uint16_t platformId = _native->GetPlatformId();
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "LicenseAccessWrapper: GetPlatformId completed successfully, value=" + std::to_string(platformId));
+                "LicenseAccessWrapper: GetPlatformId completed successfully, value: " + std::to_string(platformId));
 
             return platformId;
         }
@@ -146,7 +146,7 @@ namespace AdsWrapper
             uint32_t volumeNo = _native->GetVolumeNo();
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "LicenseAccessWrapper: GetVolumeNo completed successfully, value=" + std::to_string(volumeNo));
+                "LicenseAccessWrapper: GetVolumeNo completed successfully, value: " + std::to_string(volumeNo));
 
             return volumeNo;
         }

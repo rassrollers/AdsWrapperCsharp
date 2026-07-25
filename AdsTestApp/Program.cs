@@ -35,22 +35,38 @@ try
         .AddOption("1", "Read TwinCAT state", _ =>
         {
             var state = adsSystem.GetState();
-            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+            Console.WriteLine("TwiCAT state:");
+            Console.WriteLine($"Ads: {state.Ads}");
+            Console.WriteLine($"Device: {state.Device}");
             return Task.CompletedTask;
         })
-        .AddOption("2", "Reconfig", async _ =>
+        .AddOption("2", "Read device info", _ =>
+        {
+            var state = adsSystem.GetDeviceInfo();
+            Console.WriteLine("Device info:");
+            Console.WriteLine($"Name: {state.Name}");
+            Console.WriteLine($"Version: {state.Version}");
+            Console.WriteLine($"Revision: {state.Revision}");
+            Console.WriteLine($"Build: {state.Build}");
+            return Task.CompletedTask;
+        })
+        .AddOption("3", "Reconfig", async _ =>
         {
             adsSystem.SetTwinCatState(AdsState.Reconfig, 0);
             await Task.Delay(stateDelay);
             var state = adsSystem.GetState();
-            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+            Console.WriteLine("TwiCAT state:");
+            Console.WriteLine($"Ads: {state.Ads}");
+            Console.WriteLine($"Device: {state.Device}");
         })
-        .AddOption("3", "Reset", async _ =>
+        .AddOption("4", "Reset", async _ =>
         {
             adsSystem.SetTwinCatState(AdsState.Reset, 0);
             await Task.Delay(stateDelay);
             var state = adsSystem.GetState();
-            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+            Console.WriteLine("TwiCAT state:");
+            Console.WriteLine($"Ads: {state.Ads}");
+            Console.WriteLine($"Device: {state.Device}");
         });
 
     var plcMenu = new ConsoleMenu("ADS PLC menu")

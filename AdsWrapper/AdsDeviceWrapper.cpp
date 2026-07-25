@@ -27,7 +27,7 @@ namespace AdsWrapper
             std::string lNetId = marshal_as<std::string>(localNetId);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: LocalIp=" + lIp);
+                "AdsDeviceWrapper: Local IP: " + lIp);
 
             _native = new NativeAdsDevice(lIp, lNetId);
             _localIp = localIp;
@@ -114,7 +114,7 @@ namespace AdsWrapper
         CheckDisposed();
         if (!_remoteConfigured)
         {
-            throw gcnew InvalidOperationException("Remote route not configured. Call AddRemoteRoute first.");
+            throw gcnew InvalidOperationException("AdsDeviceWrapper: Remote route not configured. Call AddRemoteRoute first.");
         }
 
         try
@@ -135,7 +135,7 @@ namespace AdsWrapper
             newWrapper->_native->CreateAdsDevice(static_cast<uint16_t>(amsPort));
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: CreateAdsDevice completed successfully on port " + std::to_string(static_cast<int>(amsPort)));
+                "AdsDeviceWrapper: CreateAdsDevice completed successfully on AMS port " + std::to_string(static_cast<int>(amsPort)));
 
             return newWrapper;
         }
@@ -156,7 +156,7 @@ namespace AdsWrapper
             std::string rNetId;
             _native->GetRemoteNetId(rIp, rNetId);
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: GetRemoteNetId completed successfully, NetId=" + rNetId);
+                "AdsDeviceWrapper: GetRemoteNetId completed successfully, NetID: " + rNetId);
             return gcnew String(rNetId.c_str());
         }
         catch (const std::exception& ex)
@@ -173,10 +173,10 @@ namespace AdsWrapper
         try
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: SetTwinCatState called with AdsState=" + std::to_string(static_cast<int>(adsState)) +
-                ", DeviceState=" + std::to_string(static_cast<int>(deviceState)));
+                "AdsDeviceWrapper: SetTwinCatState called with AdsState: " + std::to_string(static_cast<int>(adsState)) +
+                ", DeviceState: " + std::to_string(static_cast<int>(deviceState)));
             _native->SetTwinCatState(static_cast<ADSSTATE>(adsState), static_cast<ADSSTATE>(deviceState));
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: SetTwinCatState completed successfully");
         }
         catch (const std::exception& ex)
@@ -199,8 +199,8 @@ namespace AdsWrapper
             state.Device = static_cast<AdsState>(nativeState.device);
 
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-                "AdsDeviceWrapper: GetState returned AdsState=" + std::to_string(static_cast<int>(state.Ads)) +
-                ", DeviceState=" + std::to_string(static_cast<int>(state.Device)));
+                "AdsDeviceWrapper: GetState returned AdsState: " + std::to_string(static_cast<int>(state.Ads)) +
+                ", DeviceState: " + std::to_string(static_cast<int>(state.Device)));
 
             return state;
         }
@@ -281,7 +281,7 @@ namespace AdsWrapper
             }
             Marshal::FreeHGlobal(ptr);
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: ReadSymbol '" + name + "' completed successfully");
 
             return result;
@@ -333,7 +333,7 @@ namespace AdsWrapper
             }
             Marshal::FreeHGlobal(ptr);
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: WriteSymbol '" + name + "' completed successfully");
         }
         catch (const std::exception& ex)

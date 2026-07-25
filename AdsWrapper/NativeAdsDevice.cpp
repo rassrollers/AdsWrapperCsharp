@@ -4,7 +4,7 @@
 
 NativeAdsDevice::NativeAdsDevice(const std::string& localIp, const std::string& localNetId)
 {
-	NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug, "Setting local AMS NetId to " + localNetId);
+	NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug, "NativeAdsDevice: Setting local AMS NetID to " + localNetId);
     _localIp = localIp;
     _localAms = std::make_unique<AmsNetId>(localNetId);
     bhf::ads::SetLocalAddress(*_localAms);
@@ -15,11 +15,11 @@ NativeAdsDevice::~NativeAdsDevice() = default;
 std::unique_ptr<AdsDevice> NativeAdsDevice::BuildAdsDevice(uint16_t amsPort) const
 {
     if (!_remoteAms) {
-        throw std::runtime_error("Remote AMS NetId not initialized. Call AddRemoteRoute first.");
+        throw std::runtime_error("NativeAdsDevice: Remote AMS NetId not initialized. Call AddRemoteRoute first.");
     }
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-        "Creating AdsDevice for remote IP " + _remoteIp + " on port " + std::to_string(amsPort));
+        "NativeAdsDevice: Creating AdsDevice for remote IP " + _remoteIp + " on AMS port " + std::to_string(amsPort));
 
     auto device = std::make_unique<AdsDevice>(_remoteIp, *_remoteAms, amsPort);
     device->SetTimeout(5000); // Set a default timeout of 5 seconds
@@ -41,7 +41,7 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
     SetRemoteEndpoint(remoteIp, remoteNetId);
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
-        "NativeAdsDevice: Adding remote route to " + _remoteIp);
+        "NativeAdsDevice: Adding remote route to IP: " + _remoteIp);
 
     long routeStatus = bhf::ads::AddRemoteRoute(_remoteIp,
         *_localAms,
@@ -80,7 +80,7 @@ void NativeAdsDevice::GetRemoteNetId(const std::string& remoteIp, std::string& n
 void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
 {
     if (!_device) {
-        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+        throw std::runtime_error("NativeAdsDevice: AdsDevice not initialized. Call AddRemoteRoute first.");
     }
     
     _device->SetState(adsState, deviceState);
@@ -89,7 +89,7 @@ void NativeAdsDevice::SetTwinCatState(ADSSTATE adsState, ADSSTATE deviceState)
 AdsDeviceState NativeAdsDevice::GetState() const
 {
     if (!_device) {
-        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+        throw std::runtime_error("NativeAdsDevice: AdsDevice not initialized. Call AddRemoteRoute first.");
     }
     return _device->GetState();
 }
@@ -97,7 +97,7 @@ AdsDeviceState NativeAdsDevice::GetState() const
 DeviceInfo NativeAdsDevice::GetDeviceInfo() const
 {
     if (!_device) {
-        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+        throw std::runtime_error("NativeAdsDevice: AdsDevice not initialized. Call AddRemoteRoute first.");
     }
     return _device->GetDeviceInfo();
 }
@@ -105,7 +105,7 @@ DeviceInfo NativeAdsDevice::GetDeviceInfo() const
 void NativeAdsDevice::ReadSymbol(const std::string& symbolName, void* buffer, size_t bufferSize) const
 {
     if (!_device) {
-        throw std::runtime_error("AdsDevice not initialized. Call AddRemoteRoute first.");
+        throw std::runtime_error("NativeAdsDevice: AdsDevice not initialized. Call AddRemoteRoute first.");
     }
 
     NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
