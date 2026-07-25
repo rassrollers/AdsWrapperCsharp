@@ -1,5 +1,6 @@
 ﻿using AdsWrapper;
 using System.Diagnostics;
+using AdsTestApp;
 
 // Register a log callback before creating the device
 LoggerWrapper.SetCallback((level, message) =>
@@ -13,87 +14,96 @@ var remoteIp = "192.168.1.10";
 var remoteName = "C6015";
 var remoteUser = "Administrator";
 var remotePassword = "1";
-var remotePort = AmsPort.TC3Runtime1;
+var systemPort = AmsPort.SystemService;
+var plcPort = AmsPort.TC3Runtime1;
 var stateDelay = TimeSpan.FromSeconds(3);
 
 try
 {
-    using var ads = new AdsDeviceWrapper(localIp, localNetId);
-    var rmNetId = ads.GetRemoteNetId(remoteIp);
+    using var adsSystem = new AdsDeviceWrapper(localIp, localNetId);
+    using var adsPlc = new AdsDeviceWrapper(localIp, localNetId);
+
+    var rmNetId = adsSystem.GetRemoteNetId(remoteIp);
     Console.WriteLine($"Remote NetId for {remoteIp}: {rmNetId}");
-    ads.AddRemoteRoute(remoteName, remoteIp, rmNetId, remotePort, remoteUser, remotePassword);
-    var state = ads.GetState();
 
-    bool runLoop = true;
-    while (runLoop)
-    {
-        Console.WriteLine("Type in command:\n" +
-            "0: Exit\n" +
-            "1: Reconfig\n" +
-            "2: Reset\n" +
-            "3: Read axis position\n" +
-            "4: Power on axis\n" +
-            "5: Move axis\n" +
-            "6: Stop axis\n" +
-            "7: Reset axis\n" +
-            "8: Power off axis");
+    //adsSystem.AddRemoteRoute(remoteName, remoteIp, rmNetId, systemPort, remoteUser, remotePassword);
+    
+    adsPlc.AddRemoteRoute(remoteName, remoteIp, rmNetId, plcPort, remoteUser, remotePassword);
 
-        var input = Console.ReadLine();
-        switch (input)
+    var systemMenu = new ConsoleMenu("ADS system menu")
+        .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "Read TwinCAT state", _ =>
         {
-            case "0":
-                runLoop = false;
-                break;
+            var state = adsSystem.GetState();
+            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+            return Task.CompletedTask;
+        })
+        .AddOption("2", "Reconfig", async _ =>
+        {
+            adsSystem.SetTwinCatState(AdsState.Reconfig, 0);
+            await Task.Delay(stateDelay);
+            var state = adsSystem.GetState();
+            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+        })
+        .AddOption("3", "Reset", async _ =>
+        {
+            adsSystem.SetTwinCatState(AdsState.Reset, 0);
+            await Task.Delay(stateDelay);
+            var state = adsSystem.GetState();
+            Console.WriteLine($"Current state: Ads={state.Ads}, Device={state.Device}");
+        });
 
-            case "1":
-                ads.SetTwinCatState(AdsState.Reconfig, 0);
-                await Task.Delay(stateDelay);
-                state = ads.GetState();
-                break;
+    var plcMenu = new ConsoleMenu("ADS PLC menu")
+        .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "Power on axis", _ =>
+        {
+            adsPlc.WriteSymbol<bool>("MAIN.PowerOn", true);
+            Console.WriteLine("Axis powered on");
+            return Task.CompletedTask;
+        })
+        .AddOption("2", "Power off axis", _ =>
+        {
+            adsPlc.WriteSymbol<bool>("MAIN.PowerOn", false);
+            Console.WriteLine("Axis powered off");
+            return Task.CompletedTask;
+        })
+        .AddOption("3", "Reset axis", _ =>
+        {
+            adsPlc.WriteSymbol<bool>("MAIN.ResetAxis", true);
+            Console.WriteLine("Axis reset command sent");
+            return Task.CompletedTask;
+        })
+        .AddOption("4", "Read axis position", _ =>
+        {
+            var position = adsPlc.ReadSymbol<double>("MAIN.AxisPos");
+            Console.WriteLine($"Axis position: {position}");
+            return Task.CompletedTask;
+        })
+        .AddOption("5", "Read axis error ID", _ =>
+        {
+            var errorId = adsPlc.ReadSymbol<int>("MAIN.AxisErrorID");
+            Console.WriteLine($"Axis error ID: 0x{errorId:X}");
+            return Task.CompletedTask;
+        })
+        .AddOption("6", "Move axis", _ =>
+        {
+            adsPlc.WriteSymbol<bool>("MAIN.MoveAxis", true);
+            Console.WriteLine("Axis move command sent");
+            return Task.CompletedTask;
+        })
+        .AddOption("7", "Stop axis", _ =>
+        {
+            adsPlc.WriteSymbol<bool>("MAIN.StopAxis", true);
+            Console.WriteLine("Axis stop command sent");
+            return Task.CompletedTask;
+        });
 
-            case "2":
-                ads.SetTwinCatState(AdsState.Reset, 0);
-                await Task.Delay(stateDelay);
-                state = ads.GetState();
-                break;
+    var mainMenu = new ConsoleMenu("ADS test menu")
+        .AddOption("0", "Exit", _ => Task.CompletedTask, closeMenu: true)
+        .AddOption("1", "adsSystem submenu", ct => systemMenu.RunAsync(ct))
+        .AddOption("2", "adsPlc submenu", ct => plcMenu.RunAsync(ct));
 
-            case "3":
-                double position = ads.ReadSymbol<double>("MAIN.axisPosition");
-                Console.WriteLine($"Axis position: {position}");
-                break;
-
-            case "4":
-                ads.WriteSymbol<bool>("MAIN.powerOnAxis", true);
-                Console.WriteLine("Axis powered on");
-                break;
-
-            case "5":
-                ads.WriteSymbol<bool>("MAIN.moveAxis", true);
-                Console.WriteLine("Axis move command sent");
-                break;
-
-            case "6":
-                ads.WriteSymbol<bool>("MAIN.moveAxis", false);
-                Console.WriteLine("Axis stop command sent");
-                break;
-
-            case "7":
-                ads.WriteSymbol<bool>("MAIN.resetAxis", true);
-                Console.WriteLine("Axis reset command sent");
-                await Task.Delay(1000);
-                ads.WriteSymbol<bool>("MAIN.resetAxis", false);
-                break;
-
-            case "8":
-                ads.WriteSymbol<bool>("MAIN.powerOnAxis", false);
-                Console.WriteLine("Axis powered off");
-                break;
-
-            default:
-                Console.WriteLine("Invalid command");
-                continue;
-        }
-    }
+    await mainMenu.RunAsync();
 }
 catch (Exception ex)
 {
