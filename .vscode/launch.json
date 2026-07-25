@@ -1,0 +1,27 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Launch AdsTestApp (.NET, MSBuild prelaunch)",
+      "type": "coreclr",
+      "request": "launch",
+      "preLaunchTask": "Build Solution (MSBuild, Debug|x64)",
+      "program": "${workspaceFolder}/AdsTestApp/bin/x64/${input:buildConfig}/net8.0-windows/AdsTestApp.dll",
+      "cwd": "${workspaceFolder}/AdsTestApp",
+      "console": "integratedTerminal",
+      "stopAtEntry": false
+    }
+  ],
+  "inputs": [
+    {
+      "id": "buildConfig",
+      "type": "pickString",
+      "description": "Build configuration for launch",
+      "options": [
+        "Debug",
+        "Release"
+      ],
+      "default": "Debug"
+    }
+  ]
+}

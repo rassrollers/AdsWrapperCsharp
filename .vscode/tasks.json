@@ -1,0 +1,84 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build Solution (MSBuild, Debug|x64)",
+      "type": "process",
+      "command": "pwsh",
+      "args": [
+        "-NoProfile",
+        "-ExecutionPolicy",
+        "Bypass",
+        "-Command",
+        "& { $ErrorActionPreference = 'Stop'; $pf86 = [Environment]::GetFolderPath('ProgramFilesX86'); $vswhere = Join-Path $pf86 'Microsoft Visual Studio/Installer/vswhere.exe'; if (-not (Test-Path -LiteralPath $vswhere)) { throw 'vswhere.exe not found. Install Visual Studio 2022 Build Tools.' }; $msbuild = & $vswhere -latest -products * -requires Microsoft.Component.MSBuild -find 'MSBuild/Current/Bin/MSBuild.exe' | Select-Object -First 1; if ([string]::IsNullOrWhiteSpace($msbuild)) { throw 'MSBuild.exe not found. Install Desktop development with C++ workload.' }; & $msbuild './AdsWrapperCsharp.sln' '/t:Build' '/m' '/p:Configuration=${input:buildConfig}' '/p:Platform=${input:buildPlatform}' }"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": [
+        "$msCompile"
+      ],
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": true
+      }
+    },
+    {
+      "label": "Run AdsTestApp (no build)",
+      "type": "process",
+      "command": "dotnet",
+      "args": [
+        "run",
+        "--project",
+        "./AdsTestApp/AdsTestApp.csproj",
+        "--no-build",
+        "-c",
+        "${input:buildConfig}",
+        "-p:Platform=${input:buildPlatform}"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "shared",
+        "clear": false
+      }
+    },
+    {
+      "label": "Build + Run AdsTestApp",
+      "dependsOrder": "sequence",
+      "dependsOn": [
+        "Build Solution (MSBuild, Debug|x64)",
+        "Run AdsTestApp (no build)"
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "buildConfig",
+      "type": "pickString",
+      "description": "Build configuration",
+      "options": [
+        "Debug",
+        "Release"
+      ],
+      "default": "Debug"
+    },
+    {
+      "id": "buildPlatform",
+      "type": "pickString",
+      "description": "Build platform",
+      "options": [
+        "x64",
+        "x86"
+      ],
+      "default": "x64"
+    }
+  ]
+}
