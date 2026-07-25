@@ -2,11 +2,8 @@
 using System.Diagnostics;
 using AdsTestApp;
 
-// Register a log callback before creating the device
-LoggerWrapper.SetCallback((level, message) =>
-{
-    Console.WriteLine($"[{level}] {message}");
-});
+// Initialize logger with configuration from appsettings.json
+LoggerSetup.Initialize();
 
 var localIp = "192.168.1.119";
 var localNetId = "192.168.1.119.1.1";
@@ -14,21 +11,22 @@ var remoteIp = "192.168.1.10";
 var remoteName = "C6015";
 var remoteUser = "Administrator";
 var remotePassword = "1";
-var systemPort = AmsPort.SystemService;
-var plcPort = AmsPort.TC3Runtime1;
 var stateDelay = TimeSpan.FromSeconds(3);
 
 try
 {
-    using var adsSystem = new AdsDeviceWrapper(localIp, localNetId);
-    using var adsPlc = new AdsDeviceWrapper(localIp, localNetId);
+    // Create the factory and configure the remote route
+    using var adsFactory = new AdsDeviceWrapper(localIp, localNetId);
+    var rmNetId = adsFactory.GetRemoteNetId(remoteIp);
+    Console.WriteLine($"Remote NetID for IP {remoteIp}: {rmNetId}");
+    adsFactory.AddRemoteRoute(remoteName, remoteIp, rmNetId, remoteUser, remotePassword);
+    Console.WriteLine($"Remote route created for {rmNetId}");
 
-    var rmNetId = adsSystem.GetRemoteNetId(remoteIp);
-    Console.WriteLine($"Remote NetId for {remoteIp}: {rmNetId}");
-
-    //adsSystem.AddRemoteRoute(remoteName, remoteIp, rmNetId, systemPort, remoteUser, remotePassword);
-    
-    adsPlc.AddRemoteRoute(remoteName, remoteIp, rmNetId, plcPort, remoteUser, remotePassword);
+    // Create individual device instances for system (10000) and PLC (851)
+    using var adsSystem = adsFactory.CreateAdsDevice(AmsPort.SystemService);
+    Console.WriteLine("Connection to AMS System Service port created");
+    using var adsPlc = adsFactory.CreateAdsDevice(AmsPort.TC3Runtime1);
+    Console.WriteLine("Connection to AMS TC3 PLC1 runtime port created");
 
     var systemMenu = new ConsoleMenu("ADS system menu")
         .AddOption("0", "Back", _ => Task.CompletedTask, closeMenu: true)
@@ -76,7 +74,7 @@ try
         .AddOption("4", "Read axis position", _ =>
         {
             var position = adsPlc.ReadSymbol<double>("MAIN.AxisPos");
-            Console.WriteLine($"Axis position: {position}");
+            Console.WriteLine($"Axis position: {position:F5}m");
             return Task.CompletedTask;
         })
         .AddOption("5", "Read axis error ID", _ =>

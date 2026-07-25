@@ -19,7 +19,7 @@ namespace AdsWrapper
     {
         try
         {
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: Creating new instance");
 
             std::string lIp = marshal_as<std::string>(localIp);
@@ -29,8 +29,10 @@ namespace AdsWrapper
                 "AdsDeviceWrapper: LocalIp=" + lIp);
 
             _native = new NativeAdsDevice(lIp, lNetId);
+            _localIp = localIp;
+            _localNetId = localNetId;
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: Instance created successfully");
         }
         catch (const std::exception& ex)
@@ -46,7 +48,7 @@ namespace AdsWrapper
         if (_disposed)
             return;
 
-        NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+        NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
             "AdsDeviceWrapper: Disposing");
         this->!AdsDeviceWrapper();
         GC::SuppressFinalize(this);
@@ -57,7 +59,7 @@ namespace AdsWrapper
     {
         if (_native != nullptr)
         {
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: Releasing native resources");
             delete _native;
             _native = nullptr;
@@ -73,7 +75,6 @@ namespace AdsWrapper
     void AdsDeviceWrapper::AddRemoteRoute(String^ routeName,
         String^ remoteIp,
 		String^ remoteNetId,
-        AmsPort amsPort, 
         String^ user, 
         String^ password)
     {
@@ -86,15 +87,61 @@ namespace AdsWrapper
             std::string u = marshal_as<std::string>(user);
             std::string p = marshal_as<std::string>(password);
 
-            _native->AddRemoteRoute(rName, rIp, rNetId, static_cast<int>(amsPort), u, p);
+            _native->AddRemoteRoute(rName, rIp, rNetId, u, p);
+            SetRemoteEndpoint(remoteIp, remoteNetId);
 
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: AddRemoteRoute completed successfully");
         }
         catch (const std::exception& ex)
         {
             NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
                 "AdsDeviceWrapper: AddRemoteRoute failed - " + std::string(ex.what()));
+            throw gcnew Exception(gcnew String(ex.what()));
+        }
+    }
+
+    void AdsDeviceWrapper::SetRemoteEndpoint(String^ remoteIp, String^ remoteNetId)
+    {
+        _remoteIp = remoteIp;
+        _remoteNetId = remoteNetId;
+        _remoteConfigured = true;
+    }
+
+    AdsDeviceWrapper^ AdsDeviceWrapper::CreateAdsDevice(AmsPort amsPort)
+    {
+        CheckDisposed();
+        if (!_remoteConfigured)
+        {
+            throw gcnew InvalidOperationException("Remote route not configured. Call AddRemoteRoute first.");
+        }
+
+        try
+        {
+            // Create new wrapper with same local settings
+            AdsDeviceWrapper^ newWrapper = gcnew AdsDeviceWrapper(_localIp, _localNetId);
+            
+            // Set remote endpoint on new wrapper (without adding route again)
+            newWrapper->SetRemoteEndpoint(_remoteIp, _remoteNetId);
+            
+            // Create native device on the new wrapper
+            // Use local String^ variables before marshal_as to avoid temporary reference issues
+            String^ remoteIp = _remoteIp;
+            String^ remoteNetId = _remoteNetId;
+            std::string remoteIp_std = marshal_as<std::string>(remoteIp);
+            std::string remoteNetId_std = marshal_as<std::string>(remoteNetId);
+            newWrapper->_native->SetRemoteEndpoint(remoteIp_std, remoteNetId_std);
+            newWrapper->_native->CreateAdsDevice(static_cast<uint16_t>(amsPort));
+
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+                "AdsDeviceWrapper: CreateAdsDevice completed successfully on port " + std::to_string(static_cast<int>(amsPort)));
+
+            return newWrapper;
+        }
+        catch (const std::exception& ex)
+        {
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Error,
+                "AdsDeviceWrapper: CreateAdsDevice failed - " + std::string(ex.what()));
             throw gcnew Exception(gcnew String(ex.what()));
         }
     }
@@ -107,7 +154,7 @@ namespace AdsWrapper
             std::string rIp = marshal_as<std::string>(remoteIp);
             std::string rNetId;
             _native->GetRemoteNetId(rIp, rNetId);
-            NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+            NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
                 "AdsDeviceWrapper: GetRemoteNetId completed successfully, NetId=" + rNetId);
             return gcnew String(rNetId.c_str());
         }

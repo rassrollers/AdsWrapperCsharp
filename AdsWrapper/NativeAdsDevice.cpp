@@ -4,7 +4,7 @@
 
 NativeAdsDevice::NativeAdsDevice(const std::string& localIp, const std::string& localNetId)
 {
-	NativeLogger::Instance().Log(NativeLogger::LogLevel::Info, "Setting local AMS NetId to " + localNetId);
+	NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug, "Setting local AMS NetId to " + localNetId);
     _localIp = localIp;
     _localAms = std::make_unique<AmsNetId>(localNetId);
     bhf::ads::SetLocalAddress(*_localAms);
@@ -12,18 +12,36 @@ NativeAdsDevice::NativeAdsDevice(const std::string& localIp, const std::string& 
 
 NativeAdsDevice::~NativeAdsDevice() = default;
 
-void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
-    const std::string& remoteIp,
-	const std::string& remoteNetId,
-    uint16_t amsPort,
-    const std::string& user,
-    const std::string& password)
+std::unique_ptr<AdsDevice> NativeAdsDevice::BuildAdsDevice(uint16_t amsPort) const
+{
+    if (!_remoteAms) {
+        throw std::runtime_error("Remote AMS NetId not initialized. Call AddRemoteRoute first.");
+    }
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "Creating AdsDevice for remote IP " + _remoteIp + " on port " + std::to_string(amsPort));
+
+    auto device = std::make_unique<AdsDevice>(_remoteIp, *_remoteAms, amsPort);
+    device->SetTimeout(5000); // Set a default timeout of 5 seconds
+    return device;
+}
+
+void NativeAdsDevice::SetRemoteEndpoint(const std::string& remoteIp, const std::string& remoteNetId)
 {
     _remoteIp = remoteIp;
     _remoteAms = std::make_unique<AmsNetId>(remoteNetId);
+}
 
-    NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-        "Adding remote route to " + _remoteIp);
+void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
+    const std::string& remoteIp,
+	const std::string& remoteNetId,
+    const std::string& user,
+    const std::string& password)
+{
+    SetRemoteEndpoint(remoteIp, remoteNetId);
+
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "NativeAdsDevice: Adding remote route to " + _remoteIp);
 
     long routeStatus = bhf::ads::AddRemoteRoute(_remoteIp,
         *_localAms,
@@ -37,14 +55,14 @@ void NativeAdsDevice::AddRemoteRoute(const std::string& routeName,
             "NativeAdsDevice: AddRemoteRoute failed with error code " + std::to_string(routeStatus));
         throw AdsException(routeStatus);
     }
+}
 
-    NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
-        "Creating AdsDevice for remote IP " + remoteIp + " on port " + std::to_string(amsPort));
-    _device = std::make_unique<AdsDevice>(_remoteIp,
-        *_remoteAms,
-        amsPort);
+void NativeAdsDevice::CreateAdsDevice(uint16_t amsPort)
+{
+    _device = BuildAdsDevice(amsPort);
 
-	_device->SetTimeout(5000); // Set a default timeout of 5 seconds
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
+        "NativeAdsDevice: CreateAdsDevice completed successfully on AMS port " + std::to_string(amsPort));
 }
 
 void NativeAdsDevice::GetRemoteNetId(const std::string& remoteIp, std::string& netId)
@@ -135,6 +153,6 @@ void NativeAdsDevice::WriteSymbol(const std::string& symbolName, const void* buf
         throw AdsException(error);
     }
 
-    NativeLogger::Instance().Log(NativeLogger::LogLevel::Info,
+    NativeLogger::Instance().Log(NativeLogger::LogLevel::Debug,
         "NativeAdsDevice: WriteSymbol '" + symbolName + "' completed successfully");
 }
