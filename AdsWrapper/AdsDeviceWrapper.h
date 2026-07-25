@@ -42,21 +42,27 @@ namespace AdsWrapper
         void CheckDisposed();
 
         /// <summary>
-        /// Adds a remote AMS route and establishes connection to a remote ADS device.
+        /// Adds a remote AMS route and stores remote endpoint information for later device creation.
         /// </summary>
         /// <param name="routeName">Friendly name for the route</param>
         /// <param name="remoteIp">IP address of the remote TwinCAT system</param>
         /// <param name="remoteNetId">AMS NetId of the remote system (format: "x.x.x.x.x.x")</param>
-        /// <param name="amsPort">AMS port number (e.g., PlcRuntime1 = 851)</param>
         /// <param name="user">Username for authentication (empty string if not required)</param>
         /// <param name="password">Password for authentication (empty string if not required)</param>
         /// <exception cref="Exception">Thrown when route creation fails</exception>
         void AddRemoteRoute(String^ routeName, 
             String^ remoteIp,
             String^ remoteNetId,
-            AmsPort amsPort,
             String^ user, 
             String^ password);
+
+        /// <summary>
+        /// Creates and connects a new AdsDeviceWrapper instance using the previously configured
+        /// remote endpoint from AddRemoteRoute.
+        /// </summary>
+        /// <param name="amsPort">AMS port number (e.g., PlcRuntime1 = 851)</param>
+        /// <returns>A new connected AdsDeviceWrapper</returns>
+        AdsDeviceWrapper^ CreateAdsDevice(AmsPort amsPort);
 
         /// <summary>
         /// Retrieves the AMS NetId for a remote system by its IP address.
@@ -115,5 +121,12 @@ namespace AdsWrapper
     private:
         NativeAdsDevice* _native;   ///< Pointer to native C++ ADS device implementation
         bool _disposed = false;     ///< Flag indicating if object has been disposed
+        String^ _localIp;           ///< Cached local IP for creating additional wrappers
+        String^ _localNetId;        ///< Cached local AMS NetId for creating additional wrappers
+        String^ _remoteIp;          ///< Cached remote IP for factory-style device creation
+        String^ _remoteNetId;       ///< Cached remote AMS NetId for factory-style device creation
+        bool _remoteConfigured = false; ///< True after AddRemoteRoute configures remote endpoint
+
+        void SetRemoteEndpoint(String^ remoteIp, String^ remoteNetId);
     };
 }

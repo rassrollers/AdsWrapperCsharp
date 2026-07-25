@@ -30,21 +30,32 @@ public:
     NativeAdsDevice& operator=(const NativeAdsDevice&) = delete;
     
     /// <summary>
-    /// Adds a remote AMS route and establishes connection to a remote ADS device.
+    /// Adds a remote AMS route and stores remote endpoint information for later device creation.
     /// </summary>
     /// <param name="routeName">Friendly name for the route</param>
     /// <param name="remoteIp">IP address of the remote TwinCAT system</param>
     /// <param name="remoteNetId">AMS NetId of the remote system (format: "x.x.x.x.x.x")</param>
-    /// <param name="amsPort">AMS port number (e.g., 851 for PLC runtime)</param>
     /// <param name="user">Username for authentication (if required)</param>
     /// <param name="password">Password for authentication (if required)</param>
     /// <exception cref="AdsException">Thrown when route creation fails</exception>
     void AddRemoteRoute(const std::string& routeName,
         const std::string& remoteIp,
         const std::string& remoteNetId,
-        uint16_t amsPort,
         const std::string& user,
         const std::string& password);
+
+    /// <summary>
+    /// Sets the remote endpoint metadata without adding a route or creating a device.
+    /// </summary>
+    /// <param name="remoteIp">IP address of the remote TwinCAT system</param>
+    /// <param name="remoteNetId">AMS NetId of the remote system (format: "x.x.x.x.x.x")</param>
+    void SetRemoteEndpoint(const std::string& remoteIp, const std::string& remoteNetId);
+
+    /// <summary>
+    /// Creates or replaces the ADS device connection for a previously configured remote route.
+    /// </summary>
+    /// <param name="amsPort">AMS port number (e.g., 851 for PLC runtime)</param>
+    void CreateAdsDevice(uint16_t amsPort);
 
     /// <summary>
     /// Retrieves the AMS NetId for a remote system by its IP address.
@@ -99,6 +110,8 @@ public:
     void WriteSymbol(const std::string& symbolName, const void* buffer, size_t bufferSize) const;
 
 private:
+    std::unique_ptr<AdsDevice> BuildAdsDevice(uint16_t amsPort) const;
+
     std::unique_ptr<AmsNetId> _localAms;    ///< Local AMS NetId
     std::unique_ptr<AmsNetId> _remoteAms;   ///< Remote AMS NetId
     std::unique_ptr<AdsDevice> _device;     ///< The underlying ADS device connection
