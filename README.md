@@ -47,39 +47,65 @@ Here's a basic example of how to use the ADS wrapper in your C# project:
 
 ```csharp
 using AdsWrapper;
+using AdsTestApp;
 
-class Program
+// Initialize logger with configuration from appsettings.json
+LoggerSetup.Initialize();
+
+var localIp = "192.168.1.119";
+var localNetId = "192.168.1.119.1.1";
+var remoteIp = "192.168.1.10";
+var remoteName = "C6015";
+var remoteUser = "Administrator";
+var remotePassword = "1";
+
+try
 {
-    static void Main()
-    {
-        var localIp = "192.168.1.119";
-        var localNetId = "192.168.1.119.1.1";
-        var remoteIp = "192.168.1.10";
-        var routeName = "C6015";
-        var userName = "Administrator";
-        var password = "1";
+    // Create the factory and configure the remote route (once)
+    using var adsFactory = new AdsDeviceWrapper(localIp, localNetId);
+    var remoteNetId = adsFactory.GetRemoteNetId(remoteIp);
+    adsFactory.AddRemoteRoute(remoteName, remoteIp, remoteNetId, remoteUser, remotePassword);
 
-        using var ads = new AdsDeviceWrapper(localIp, localNetId);
-        var remoteNetId = ads.GetRemoteNetId(remoteIp);
-        ads.AddRemoteRoute(routeName, remoteIp, remoteNetId, AmsPort.TC3Runtime1, userName, password);
+    // Create individual device instances for system and PLC (can create multiple)
+    using var adsSystem = adsFactory.CreateAdsDevice(AmsPort.SystemService);
+    using var adsPlc = adsFactory.CreateAdsDevice(AmsPort.TC3Runtime1);
 
-        var info = ads.GetDeviceInfo();
-        Console.WriteLine($"Device info: {info}");
+    // Use adsSystem for system operations
+    var state = adsSystem.GetState();
+    Console.WriteLine($"System ADS state: {state}");
 
-        var state = ads.GetState();
-        Console.WriteLine($"ADS state: {state}");
+    // Use adsPlc for PLC operations
+    var info = adsPlc.GetDeviceInfo();
+    Console.WriteLine($"PLC device info: {info}");
 
-        Console.WriteLine($"Set PLC in run");
-        ads.SetTwinCatState(AdsState.Run, 0);
+    Console.WriteLine("Set PLC in run");
+    adsSystem.SetTwinCatState(AdsState.Run, 0);
 
-        double position = ads.ReadSymbol<double>("MAIN.axisPosition");
-        Console.WriteLine($"Axis position: {position}");
+    double position = adsPlc.ReadSymbol<double>("MAIN.axisPosition");
+    Console.WriteLine($"Axis position: {position}");
 
-        Console.WriteLine("Axis powered on");
-        ads.WriteSymbol<bool>("MAIN.powerOnAxis", true);
-    }
+    Console.WriteLine("Axis powered on");
+    adsPlc.WriteSymbol<bool>("MAIN.powerOnAxis", true);
+}
+catch (Exception ex)
+{
+    Console.WriteLine($"Error: {ex.Message}");
 }
 ```
+
+### Multiple ADS Device Factory Pattern
+
+The wrapper uses a factory pattern for managing multiple ADS devices:
+
+1. **Create a Factory**: Instantiate one `AdsDeviceWrapper` as the factory with local network settings
+2. **Configure Route Once**: Call `AddRemoteRoute()` to set up the remote connection
+3. **Create Multiple Devices**: Call `CreateAdsDevice(port)` multiple times with different AMS ports to create independent device instances
+4. **Independent Cleanup**: Each wrapper instance manages its own resources and is cleaned up via `using` statements
+
+This approach allows you to:
+- Manage multiple ADS connections (e.g., SystemService and PLC runtime)
+- Avoid repeated route setup for multiple devices
+- Keep resource management clean and deterministic
 
 ## Getting the solution to build
 
